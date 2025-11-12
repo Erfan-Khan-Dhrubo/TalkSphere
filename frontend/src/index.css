@@ -1,2 +1,101 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+/* 🌤 TalkSphere Light Theme */
+@plugin "daisyui/theme" {
+  name: "talksphereLight"; /* Theme name */
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+
+  /* Base colors (background layers) */
+  --color-base-100: #f8f6f5; /* main background  #cae9ff */
+  --color-base-200: #cae9ff; /* card / surface */
+  --color-base-300: #a9d9e7; /* subtle panels */
+  --color-base-content: #1b4965; /* main text color */
+
+  /* Personal/neutral info section */
+  --color-info: #5fa8d3;
+  --color-info-content: #0d1b2a;
+
+  /* Theme colors */
+  --color-primary: #1b4965; /* navy blue for buttons / navbar */
+  --color-primary-content: #ffffff; /* text on primary */
+  --color-secondary: #62b6cb; /* teal highlight */
+  --color-secondary-content: #ffffff;
+  --color-accent: #5fa8d3; /* soft blue accent */
+  --color-accent-content: #ffffff;
+  --color-neutral: #bee9e8; /* soft neutral surfaces */
+  --color-neutral-content: #1b4965;
+
+  /* Feedback colors */
+  --color-success: #27ae60; /* success green */
+  --color-success-content: #ffffff;
+  --color-warning: #e6b800; /* warm yellow */
+  --color-warning-content: #1b4965;
+  --color-error: #e63946; /* red for errors */
+  --color-error-content: #ffffff;
+
+  /* Border radius */
+  --radius-selector: 1rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+
+  /* Sizes */
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  /* Border & Effects */
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+/* 🌙 TalkSphere Dark Theme */
+@plugin "daisyui/theme" {
+  name: "talksphereDark";
+  prefersdark: true;
+  color-scheme: dark;
+
+  /* Base colors */
+  --color-base-100: #0b1d2b; /* background */
+  --color-base-200: #1b2e3c; /* card/surface */
+  --color-base-300: #223e4f; /* subtle panels */
+  --color-base-content: #e3f2fd; /* main text color */
+
+  /* Personal/neutral info section */
+  --color-info: #1b4965;
+  --color-info-content: #cae9ff;
+
+  /* Theme colors */
+  --color-primary: #62b6cb; /* teal pop */
+  --color-primary-content: #ffffff;
+  --color-secondary: #5fa8d3; /* soft blue accent */
+  --color-secondary-content: #ffffff;
+  --color-accent: #cae9ff; /* bright highlight */
+  --color-accent-content: #0b1d2b;
+  --color-neutral: #1b2e3c;
+  --color-neutral-content: #e3f2fd;
+
+  /* Feedback colors */
+  --color-success: #6ee7b7;
+  --color-success-content: #0b1d2b;
+  --color-warning: #facc15;
+  --color-warning-content: #0b1d2b;
+  --color-error: #f87171;
+  --color-error-content: #0b1d2b;
+
+  /* Border radius */
+  --radius-selector: 1rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+
+  /* Sizes */
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  /* Border & Effects */
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
