@@ -12,6 +12,7 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+        loader: () => fetch("/abc.json"),
       },
       {
         path: "/admin",

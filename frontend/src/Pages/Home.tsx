@@ -1,8 +1,22 @@
-import { useState } from "react";
+import React from "react";
+
+import Card from "./Card";
+import { useLoaderData } from "react-router";
 
 const Home: React.FC = () => {
-  const [count, setCount] = useState<number>(0);
-  return <h1>Home</h1>;
+  //const app = useLoaderData();
+  const app = useLoaderData();
+  console.log(app);
+
+  console.log(app);
+
+  return (
+    <div>
+      {app.map((single, index) => (
+        <Card key={index} single={single} />
+      ))}
+    </div>
+  );
 };
 
 export default Home;
