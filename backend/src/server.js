@@ -2,6 +2,7 @@ import express from "express";
 import { connectDB } from "./config/db.js";
 import cors from "cors";
 import dotenv from "dotenv";
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 
@@ -17,8 +18,9 @@ app.use(
 
 app.use(express.json());
 
+app.use("/api/users", userRoutes);
+
 connectDB().then(() => {
-  // app.listen() starts the server so it can listen for requests.
   app.listen(PORT, () => {
     console.log("Server started on port:", PORT);
   });

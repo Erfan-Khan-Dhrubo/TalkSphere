@@ -3,6 +3,7 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { Link } from "react-router";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../config/AuthPorvider";
+import backendApi from "../../utilities/axios";
 
 const Signup: React.FC = () => {
   // Form state with explicit types
@@ -45,7 +46,7 @@ const Signup: React.FC = () => {
   };
 
   // Handling Signup with email
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
     setError("");
@@ -57,37 +58,62 @@ const Signup: React.FC = () => {
       return;
     }
 
-    createUser(email, password)
-      .then((userCredential: any) => {
-        const user = userCredential.user;
+    try {
+      // Firebase create user
+      const userCredential: any = await createUser(email, password);
+      const user = userCredential.user;
+
+      // Create user in backend
+      try {
+        await backendApi.post("/users", { name, email: user.email });
+        setUser(user);
         toast.success("Registration Successful!");
-        setSaving(false);
-      })
-      .catch((error: any) => {
+      } catch (backendError) {
         toast.error("Failed to register");
-        setError(error.message);
-        setSaving(false);
-      });
+        console.log("Error creating user in backend:", backendError);
+      }
+
+      // Clear form
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+    } catch (error: any) {
+      toast.error("Failed to register");
+      setError(error.message);
+    } finally {
+      setSaving(false);
+    }
+
     console.log({ name, email, password, confirmPassword });
-    setName("");
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
   };
 
   // Handling Signup with Google
-  const handleGoogleLogin = () => {
-    createUserWithGoogle()
-      .then((userCredential: any) => {
-        const user = userCredential.user;
-        toast.success("Registration Successful!");
+  const handleGoogleLogin = async () => {
+    setSaving(true);
+    setError("");
+    try {
+      const userCredential: any = await createUserWithGoogle();
+      const user = userCredential.user;
+
+      // Create user in backend
+      try {
+        await backendApi.post("/users", {
+          name: user.displayName,
+          email: user.email,
+        });
         setUser(user);
-      })
-      .catch((error: any) => {
-        toast.error("Google login failed.");
-        setError(error.message);
-      })
-      .finally(() => setSaving(false));
+        toast.success("Registration Successful!");
+      } catch (backendError) {
+        toast.error("Failed to register in backend");
+        console.log("Error creating user in backend:", backendError);
+      }
+    } catch (error: any) {
+      toast.error("Google login failed.");
+      setError(error.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
