@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { Link } from "react-router";
+import toast from "react-hot-toast";
+import { AuthContext } from "../../config/AuthPorvider";
 
 const Signup: React.FC = () => {
   // Form state with explicit types
@@ -8,20 +10,84 @@ const Signup: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [saving, setSaving] = useState<boolean>(false);
+  const { createUser, createUserWithGoogle, setUser } = useContext(AuthContext);
 
   // Toggle password visibility
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
 
-  // Placeholder function for Sign Up
+  useEffect(() => {
+    document.title = "TalkSphere | Signup";
+  }, []);
+
+  const validatePassword = (
+    password: string,
+    confirmPassword: string
+  ): string | null => {
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const isLength = password.length >= 8;
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    if (password !== confirmPassword) return "Passwords do not match!";
+    if (!hasUpper)
+      return "Password must contain at least one uppercase letter.";
+    if (!hasLower)
+      return "Password must contain at least one lowercase letter.";
+    if (!isLength) return "Password must be at least 8 characters long.";
+    if (!hasSpecial)
+      return "Password must contain at least one special character.";
+
+    return null;
+  };
+
+  // Handling Signup with email
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
+    setSaving(true);
+    setError("");
+
+    const passwordError = validatePassword(password, confirmPassword);
+    if (passwordError) {
+      setSaving(false);
+      setError(passwordError);
+      return;
+    }
+
+    createUser(email, password)
+      .then((userCredential: any) => {
+        const user = userCredential.user;
+        toast.success("Registration Successful!");
+        setSaving(false);
+      })
+      .catch((error: any) => {
+        toast.error("Failed to register");
+        setError(error.message);
+        setSaving(false);
+      });
     console.log({ name, email, password, confirmPassword });
     setName("");
     setEmail("");
     setPassword("");
     setConfirmPassword("");
+  };
+
+  // Handling Signup with Google
+  const handleGoogleLogin = () => {
+    createUserWithGoogle()
+      .then((userCredential: any) => {
+        const user = userCredential.user;
+        toast.success("Registration Successful!");
+        setUser(user);
+      })
+      .catch((error: any) => {
+        toast.error("Google login failed.");
+        setError(error.message);
+      })
+      .finally(() => setSaving(false));
   };
 
   return (
@@ -97,18 +163,19 @@ const Signup: React.FC = () => {
               {showConfirmPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
             </button>
           </div>
-
+          {error && <p className="text-red-500 text-sm">{error}</p>}
           {/* Submit Button */}
           <button
             type="submit"
             className="btn btn-primary w-full font-semibold mt-2"
           >
-            Sign Up
+            {saving ? "Creating Account..." : "Sign Up"}
           </button>
 
           <div className="divider">OR</div>
 
           <button
+            onClick={handleGoogleLogin}
             type="button"
             className="btn btn-outline btn-secondary w-full font-semibold flex items-center justify-center gap-2"
           >
