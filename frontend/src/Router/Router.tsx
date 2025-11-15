@@ -3,6 +3,8 @@ import Home from "../pages/Home/Home";
 import Description from "../pages/Home/Description";
 import Login from "../pages/Home/Login";
 import Signup from "../pages/Home/Signup";
+import Feed from "../pages/Feed/Feed";
+import NewsFeed from "../pages/Feed/NewsFeed";
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +22,16 @@ export const router = createBrowserRouter([
       {
         path: "signup",
         element: <Signup />,
+      },
+    ],
+  },
+  {
+    path: "/feed",
+    element: <Feed />,
+    children: [
+      {
+        index: true,
+        element: <NewsFeed />,
       },
     ],
   },
