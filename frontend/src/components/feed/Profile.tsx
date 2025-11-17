@@ -1,13 +1,36 @@
 import React, { useContext } from "react";
 import { FaCamera } from "react-icons/fa";
 import { AuthContext } from "../../config/AuthPorvider";
-import Loader from "../../components/common/Loader";
+import Loader from "../common/Loader";
 import { ThumbsDown } from "lucide-react";
 import { ThumbsUp } from "lucide-react";
+import { uploadToCloudinary } from "../../utilities/imageUpload";
+import backendApi from "../../utilities/axios";
 
 const Profile: React.FC = () => {
-  const { presentUser } = useContext(AuthContext);
-  console.log(presentUser);
+  const { presentUser, setPresentUser } = useContext(AuthContext);
+
+  const uploadImage = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: "profile" | "cover"
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const imageUrl = await uploadToCloudinary(file);
+
+    try {
+      const res = await backendApi.patch(
+        `/users/updateImage/${presentUser.email}`,
+        { imageUrl, type }
+      );
+
+      setPresentUser(res.data.user); // full updated user object
+      return res.data.user;
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   if (!presentUser) {
     return <Loader />;
@@ -15,7 +38,7 @@ const Profile: React.FC = () => {
   return (
     <div className="w-full max-w-5xl mx-auto font-sans">
       {/* Cover Photo */}
-      <div className="relative w-full h-44 bg-gray-200 rounded-lg overflow-hidden">
+      <div className="relative w-full h-60 bg-gray-200 rounded-lg overflow-hidden">
         <img
           src={presentUser.coverPic}
           alt="Cover"
@@ -23,12 +46,18 @@ const Profile: React.FC = () => {
         />
 
         {/* Cover camera button (no upload) */}
-        <button
+        <label
           className="absolute right-4 top-4 bg-white/90 p-2 rounded-full shadow hover:scale-105 transition z-2"
           aria-label="Camera icon"
         >
           <FaCamera className="h-5 w-5" />
-        </button>
+          <input
+            type="file"
+            className="hidden"
+            aria-label="Upload image"
+            onChange={(e) => uploadImage(e, "cover")}
+          />
+        </label>
       </div>
 
       {/* Profile Section */}
@@ -38,16 +67,19 @@ const Profile: React.FC = () => {
           <img
             src={presentUser.profilePic}
             alt="Profile"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover rounded-full"
           />
 
-          {/* Profile camera button (no upload) */}
-          <button
-            className="absolute right-0 bottom-0 -mb-1 -mr-1 bg-white p-2 rounded-full shadow hover:scale-105 transition"
-            aria-label="Camera icon"
-          >
+          {/* Profile camera button  */}
+          <label className="absolute right-0 bottom-0 -mb-1 -mr-1 bg-white p-2 rounded-full shadow hover:scale-105 transition cursor-pointer">
             <FaCamera className="h-5 w-5" />
-          </button>
+            <input
+              type="file"
+              className="hidden"
+              aria-label="Upload image"
+              onChange={(e) => uploadImage(e, "profile")}
+            />
+          </label>
         </div>
 
         {/* Name and Friends */}

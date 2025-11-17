@@ -5,8 +5,8 @@ import Login from "../pages/Home/Login";
 import Signup from "../pages/Home/Signup";
 import Feed from "../pages/Feed/Feed";
 import NewsFeed from "../pages/Feed/NewsFeed";
-import Profile from "../pages/Feed/Profile";
 import PrivateRoutes from "./PrivateRoutes";
+import MyProfile from "../pages/Feed/MyProfile";
 
 export const router = createBrowserRouter([
   {
@@ -43,7 +43,7 @@ export const router = createBrowserRouter([
         path: "/feed/profile",
         element: (
           <PrivateRoutes>
-            <Profile />
+            <MyProfile />
           </PrivateRoutes>
         ),
       },

@@ -56,3 +56,51 @@ export const getUserByEmail = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// Update Image URL
+export const updateUserImage = async (req, res) => {
+  try {
+    const email = req.params.email;
+    const { imageUrl, type } = req.body; // type: "profile" or "cover"
+
+    if (!email || !imageUrl || !type) {
+      return res
+        .status(400)
+        .json({ error: "Email, imageUrl, and type are required" });
+    }
+
+    const updateField =
+      type === "profile"
+        ? { profilePic: imageUrl }
+        : type === "cover"
+        ? { coverPic: imageUrl }
+        : null;
+
+    if (!updateField) {
+      return res
+        .status(400)
+        .json({ error: "Type must be either 'profile' or 'cover'" });
+    }
+
+    // Find user and update, return full updated user
+    const updatedUser = await userModel.findOneAndUpdate(
+      { email },
+      updateField,
+      {
+        new: true, // return the updated document
+      }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({
+      message: `${type} image updated successfully`,
+      user: updatedUser, // send the full updated user object
+    });
+  } catch (err) {
+    console.error("Update image error:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
