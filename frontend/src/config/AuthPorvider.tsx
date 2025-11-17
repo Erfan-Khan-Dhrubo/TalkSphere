@@ -12,6 +12,7 @@ import {
   type User,
 } from "firebase/auth";
 import app from "./firebase.config";
+import backendApi from "../utilities/axios";
 
 export const AuthContext = createContext<any>(null);
 
@@ -25,6 +26,7 @@ interface AuthProviderProps {
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [presentUser, setPresentUser] = useState<User | null>(null);
 
   // Create user (email + password)
   const createUser = (email: string, password: string) => {
@@ -42,6 +44,18 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+
+      const fetchNote = async () => {
+        try {
+          const res = await backendApi.get(
+            `/users/email/${currentUser?.email}`
+          ); // This sends a GET request to backend.
+          setPresentUser(res.data);
+        } catch (error) {
+          console.log("Error in fetching note", error);
+        }
+      };
+      fetchNote();
       setLoading(false);
     });
     return () => unsubscribe();
@@ -83,6 +97,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     updateUser,
     createUserWithGoogle,
     forgetPassword,
+    presentUser,
+    setPresentUser,
   };
 
   return <AuthContext value={authData}>{children}</AuthContext>;

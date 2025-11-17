@@ -1,6 +1,6 @@
 import React from "react";
 
 const NewsFeed: React.FC = () => {
-  return <div className="w-20">Have a good coding</div>;
+  return <div>h</div>;
 };
 export default NewsFeed;

@@ -9,7 +9,7 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="w-full bg-white shadow-md px-10 py-3 fixed top-0 left-0 z-50">
+    <nav className="w-full bg-white shadow-md px-10 py-3 ">
       {/* ------------ DESKTOP NAVBAR (md and up) ------------ */}
       <div className="hidden md:flex justify-between items-center">
         {/* LEFT LOGO */}
@@ -25,6 +25,7 @@ const Navbar: React.FC = () => {
         <div className="flex items-center gap-8">
           <NavLink
             to="/feed"
+            end
             className={({ isActive }) =>
               isActive ? "text-blue-600" : "text-gray-500"
             }
@@ -48,7 +49,7 @@ const Navbar: React.FC = () => {
           <Tooltip id="tooltip-favourite" place="top" content="Favourite" />
 
           <NavLink
-            to="/profile"
+            to="/feed/profile"
             className={({ isActive }) =>
               isActive ? "text-blue-600" : "text-gray-500"
             }

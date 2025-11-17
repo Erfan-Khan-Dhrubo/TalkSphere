@@ -5,6 +5,8 @@ import Login from "../pages/Home/Login";
 import Signup from "../pages/Home/Signup";
 import Feed from "../pages/Feed/Feed";
 import NewsFeed from "../pages/Feed/NewsFeed";
+import Profile from "../pages/Feed/Profile";
+import PrivateRoutes from "./PrivateRoutes";
 
 export const router = createBrowserRouter([
   {
@@ -31,7 +33,19 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <NewsFeed />,
+        element: (
+          <PrivateRoutes>
+            <NewsFeed />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/feed/profile",
+        element: (
+          <PrivateRoutes>
+            <Profile />
+          </PrivateRoutes>
+        ),
       },
     ],
   },

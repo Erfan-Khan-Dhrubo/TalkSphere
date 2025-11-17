@@ -90,29 +90,25 @@ const Signup: React.FC = () => {
 
   // Handling Signup with Google
   const handleGoogleLogin = async () => {
-    setSaving(true);
-    setError("");
     try {
-      const userCredential: any = await createUserWithGoogle();
-      const user = userCredential.user;
+      const result: any = await createUserWithGoogle();
+      const user = result.user;
 
-      // Create user in backend
-      try {
+      const isNewUser = result._tokenResponse?.isNewUser;
+
+      // If new user → create in backend
+      if (isNewUser) {
         await backendApi.post("/users", {
-          name: user.displayName,
+          name: user.displayName || "Unnamed User",
           email: user.email,
         });
-        setUser(user);
-        toast.success("Registration Successful!");
-      } catch (backendError) {
-        toast.error("Failed to register in backend");
-        console.log("Error creating user in backend:", backendError);
       }
-    } catch (error: any) {
-      toast.error("Google login failed.");
-      setError(error.message);
-    } finally {
-      setSaving(false);
+
+      toast.success("Login successful!");
+      setUser(user);
+    } catch (error) {
+      console.log(error);
+      toast.error("Google login failed");
     }
   };
 

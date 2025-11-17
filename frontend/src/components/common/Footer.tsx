@@ -23,8 +23,8 @@ const Footer: React.FC = () => {
           {[
             { name: "Newsfeed", path: "/feed" },
             { name: "Favourite", path: "/favourite" },
+            { name: "My Profile", path: "/feed/profile" },
             { name: "Create Post", path: "/create-post" },
-            { name: "My Profile", path: "/profile" },
           ].map((link) => (
             <Link
               key={link.path}

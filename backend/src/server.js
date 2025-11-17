@@ -18,6 +18,7 @@ app.use(
 
 app.use(express.json());
 
+// User API Call
 app.use("/api/users", userRoutes);
 
 connectDB().then(() => {
