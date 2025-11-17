@@ -1,12 +1,29 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router";
 import { Home, Star, User, PlusSquare } from "lucide-react";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
+import { AuthContext } from "../../config/AuthPorvider";
+import toast from "react-hot-toast";
 
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { presentUser, logout } = useContext(AuthContext);
+
+  if (!presentUser) {
+    return (
+      <div className="flex justify-center items-center min-h-16 bg-white shadow-md">
+        <span className="loading loading-spinner loading-md text-blue-500"></span>
+      </div>
+    );
+  }
+
+  const onLogout = () => {
+    logout()
+      .then(() => toast.success("Logout successful!"))
+      .catch(() => toast.error("Logout failed!"));
+  };
 
   return (
     <nav className="w-full bg-white shadow-md px-10 py-3 ">
@@ -77,7 +94,8 @@ const Navbar: React.FC = () => {
         <div className="relative">
           <img
             onClick={() => setMenuOpen(!menuOpen)}
-            src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            //src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            src={presentUser.profilePic}
             className="w-10 h-10 rounded-full cursor-pointer border"
           />
 
@@ -88,7 +106,7 @@ const Navbar: React.FC = () => {
                 className="w-full text-left px-4 py-2 hover:bg-gray-100"
                 onClick={() => {
                   setMenuOpen(false);
-                  navigate("/logout");
+                  onLogout();
                 }}
               >
                 Logout
@@ -125,7 +143,7 @@ const Navbar: React.FC = () => {
                   className="w-full text-left px-4 py-2 hover:bg-gray-100"
                   onClick={() => {
                     setMenuOpen(false);
-                    navigate("/logout");
+                    onLogout();
                   }}
                 >
                   Logout

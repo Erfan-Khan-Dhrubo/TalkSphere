@@ -31,9 +31,7 @@ const PrivateRoutes: React.FC<PrivateProps> = ({ children }) => {
   if (user?.email) return children;
 
   if (showAlert) {
-    return (
-      <Navigate to="/signup" replace state={{ from: location.pathname }} />
-    );
+    return <Navigate to="/" />;
   }
 
   return null;

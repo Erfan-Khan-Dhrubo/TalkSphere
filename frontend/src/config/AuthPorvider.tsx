@@ -69,7 +69,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Email Sign in
   const signIn = (email: string, password: string) => {
-    setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
 

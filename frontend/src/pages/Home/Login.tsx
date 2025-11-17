@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { AuthContext } from "../../config/AuthPorvider";
+import toast from "react-hot-toast";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -8,19 +10,57 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [forgotEmail, setForgotEmail] = useState<string>("");
   const [showForgot, setShowForgot] = useState<boolean>(false);
+  const { signIn, setPresentUser, createUserWithGoogle, forgetPassword } =
+    useContext(AuthContext);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   // Type the event as FormEvent<HTMLFormElement>
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ email, password });
-    setEmail("");
-    setPassword("");
+    setLoading(true);
+
+    try {
+      const userCredential = await signIn(email, password);
+      const user = userCredential.user;
+
+      toast.success("Login Successful");
+      setPresentUser(user);
+
+      // After success
+      setEmail("");
+      setPassword("");
+
+      navigate("/feed");
+    } catch (err) {
+      console.log(err);
+      toast.error("Login Failed. Check your credentials.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleForgotPassword = (e: React.FormEvent) => {
+  const handleGoogleLogin = () => {
+    createUserWithGoogle()
+      .then((userCredential: any) => {
+        setPresentUser(userCredential.user);
+        toast.success("Login Successful");
+        navigate("/feed");
+      })
+      .catch(() => toast.error("Google Login Failed"));
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Forgot Password Email:", forgotEmail);
-    setForgotEmail("");
+    try {
+      await forgetPassword(forgotEmail);
+      toast.success("Password reset email sent! Check your inbox.");
+      setForgotEmail("");
+    } catch (error) {
+      toast.error("Failed to send reset email. Please check your address.");
+    }
+    setShowForgot(false);
   };
 
   return (
@@ -81,13 +121,15 @@ const Login: React.FC = () => {
               <button
                 type="submit"
                 className="btn btn-primary w-full font-semibold mt-2"
+                disabled={loading}
               >
-                Log In
+                {loading ? "Logging in" : "Log in"}
               </button>
 
               <div className="divider">OR</div>
 
               <button
+                onClick={handleGoogleLogin}
                 type="button"
                 className="btn btn-outline btn-secondary w-full font-semibold"
               >
