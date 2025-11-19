@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../config/AuthPorvider";
 import backendApi from "../../utilities/axios";
@@ -13,7 +13,10 @@ const Signup: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [saving, setSaving] = useState<boolean>(false);
-  const { createUser, createUserWithGoogle, setUser } = useContext(AuthContext);
+  const { createUser, createUserWithGoogle, setUser, presentUser } =
+    useContext(AuthContext);
+
+  const navigate = useNavigate();
 
   // Toggle password visibility
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -23,6 +26,13 @@ const Signup: React.FC = () => {
   useEffect(() => {
     document.title = "TalkSphere | Signup";
   }, []);
+
+  useEffect(() => {
+    if (presentUser) {
+      toast.success("You are already login");
+      navigate("/feed");
+    }
+  }, [presentUser]);
 
   const validatePassword = (
     password: string,

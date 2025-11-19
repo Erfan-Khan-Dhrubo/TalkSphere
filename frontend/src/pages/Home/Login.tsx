@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { Link, useNavigate } from "react-router";
 import { AuthContext } from "../../config/AuthPorvider";
@@ -10,11 +10,23 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [forgotEmail, setForgotEmail] = useState<string>("");
   const [showForgot, setShowForgot] = useState<boolean>(false);
-  const { signIn, setPresentUser, createUserWithGoogle, forgetPassword } =
-    useContext(AuthContext);
+  const {
+    signIn,
+    setPresentUser,
+    createUserWithGoogle,
+    forgetPassword,
+    presentUser,
+  } = useContext(AuthContext);
   const [loading, setLoading] = useState<boolean>(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (presentUser) {
+      toast.success("You are already login");
+      navigate("/feed");
+    }
+  }, [presentUser]);
 
   // Type the event as FormEvent<HTMLFormElement>
   const handleLogin = async (e: React.FormEvent) => {

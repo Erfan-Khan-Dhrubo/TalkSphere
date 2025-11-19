@@ -51,10 +51,15 @@ const Navbar: React.FC = () => {
             <Home className="w-6 h-6" />
           </NavLink>
 
-          <Tooltip id="tooltip-home" place="top" content="Home" />
+          <Tooltip
+            id="tooltip-home"
+            place="top"
+            content="Home"
+            className="z-50"
+          />
 
           <NavLink
-            to="/favourite"
+            to="/feed/favorites"
             className={({ isActive }) =>
               isActive ? "text-blue-600" : "text-gray-500"
             }
@@ -63,7 +68,12 @@ const Navbar: React.FC = () => {
             <Star className="w-6 h-6" />
           </NavLink>
 
-          <Tooltip id="tooltip-favourite" place="top" content="Favourite" />
+          <Tooltip
+            id="tooltip-favourite"
+            place="top"
+            content="Favourite"
+            className="z-50"
+          />
 
           <NavLink
             to="/feed/profile"
@@ -75,10 +85,15 @@ const Navbar: React.FC = () => {
             <User className="w-6 h-6" />
           </NavLink>
 
-          <Tooltip id="tooltip-profile" place="top" content="Profile" />
+          <Tooltip
+            id="tooltip-profile"
+            place="top"
+            content="Profile"
+            className="z-50"
+          />
 
           <NavLink
-            to="/create-post"
+            to="/feed/createPost"
             className={({ isActive }) =>
               isActive ? "text-blue-600" : "text-gray-500"
             }
@@ -87,7 +102,12 @@ const Navbar: React.FC = () => {
             <PlusSquare className="w-6 h-6" />
           </NavLink>
 
-          <Tooltip id="tooltip-create" place="top" content="Create Post" />
+          <Tooltip
+            id="tooltip-create"
+            place="top"
+            content="Create Post"
+            className="z-50"
+          />
         </div>
 
         {/* RIGHT PROFILE */}
@@ -183,7 +203,7 @@ const Navbar: React.FC = () => {
           </NavLink>
 
           <NavLink
-            to="/create-post"
+            to="/feed/createPost"
             className={({ isActive }) =>
               isActive ? "text-blue-600" : "text-gray-500"
             }
