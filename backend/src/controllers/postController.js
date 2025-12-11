@@ -26,18 +26,16 @@ export async function createPost(req, res) {
   }
 }
 
-// ===============================
-// Get All Posts
-// ===============================
-// export async function getAllPosts(req, res) {
-//   try {
-//     const posts = await PostModel.find().sort({ createdAt: -1 });
-//     res.status(200).json(posts);
-//   } catch (error) {
-//     console.error("Error fetching posts:", error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// }
+//Get All Posts
+export async function getAllPosts(req, res) {
+  try {
+    const posts = await PostModel.find().sort({ createdAt: -1 });
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+}
 
 // // ===============================
 // // Get Post by ID

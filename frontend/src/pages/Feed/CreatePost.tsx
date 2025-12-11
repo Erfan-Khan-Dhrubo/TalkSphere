@@ -1,16 +1,22 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FaCamera } from "react-icons/fa";
 import { uploadToCloudinary } from "../../utilities/imageUpload";
 import Preview from "../../components/feed/createPost/Preview";
+import { AuthContext } from "../../config/AuthPorvider";
+import backendApi from "../../utilities/axios";
+import toast from "react-hot-toast";
 
 const CreatePost: React.FC = () => {
+  const { presentUser } = useContext(AuthContext);
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState<string | null>(null);
 
   const [previewOpen, setPreviewOpen] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [postLoading, setPostLoading] = useState<boolean>(false);
 
   // HANDLE FILE UPLOAD
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,6 +27,42 @@ const CreatePost: React.FC = () => {
     const url = await uploadToCloudinary(file);
     setImage(url);
     setLoading(false);
+  };
+
+  // Posting the post
+  const handleSubmit = async (e: React.FormEvent) => {
+    if (!title || !content) {
+      toast.error("You need to fill title and content");
+      return;
+    }
+    e.preventDefault();
+    setPostLoading(true);
+
+    try {
+      const postData = {
+        userId: presentUser._id,
+        author: presentUser.name,
+        title,
+        content,
+        image,
+        userImage: presentUser.profilePic,
+      };
+
+      const res = await backendApi.post("/posts", postData);
+
+      toast.success("Post created successfully!");
+      console.log("Created Post:", res.data);
+
+      // Reset form
+      setTitle("");
+      setContent("");
+      setImage(null);
+    } catch (error) {
+      console.error("Error creating post", error);
+      toast.error("Failed to create post");
+    } finally {
+      setPostLoading(false);
+    }
   };
 
   return (
@@ -84,8 +126,12 @@ const CreatePost: React.FC = () => {
           Preview Post
         </button>
         {/* POST BUTTON */}
-        <button className="btn w-full font-semibold mt-4 bg-primary text-white hover:bg-primary-focus active:scale-95 transition transform shadow-lg rounded-lg py-3">
-          POST
+        <button
+          disabled={postLoading}
+          onClick={handleSubmit}
+          className="btn w-full font-semibold mt-4 bg-primary text-white hover:bg-primary-focus active:scale-95 transition transform shadow-lg rounded-lg py-3"
+        >
+          {postLoading ? "Posting" : "Post"}
         </button>
       </div>
 
