@@ -24,8 +24,8 @@ const CreatePost: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen px-6 md:px-16 py-10 text-base-content">
-      <div className="max-w-2xl mx-auto bg-base-100 border border-primary p-6 rounded-xl shadow-md">
+    <div className="min-h-screen px-6 md:px-16 py-16 text-base-content">
+      <div className="max-w-2xl mx-auto bg-base-100 border border-primary px-6 py-12 rounded-xl shadow-md">
         <h2 className="text-2xl font-semibold mb-6 text-center">
           Create a Post
         </h2>
