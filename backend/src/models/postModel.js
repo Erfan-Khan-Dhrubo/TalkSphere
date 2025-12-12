@@ -36,15 +36,19 @@ const PostSchema = new mongoose.Schema(
     },
 
     // Voting System
-    upVotes: {
-      type: Number,
-      default: 0,
-    },
+    upVotes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
 
-    downVotes: {
-      type: Number,
-      default: 0,
-    },
+    downVotes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
 
     // To display number of comments quickly
     commentCount: {

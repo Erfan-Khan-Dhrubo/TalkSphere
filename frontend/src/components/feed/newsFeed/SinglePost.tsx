@@ -1,13 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import {
-  FaThumbsUp,
-  FaThumbsDown,
-  FaComment,
-  FaBookmark,
-} from "react-icons/fa";
+import { FaComment, FaBookmark } from "react-icons/fa";
 import { AuthContext } from "../../../config/AuthPorvider";
 import backendApi from "../../../utilities/axios";
+import VoteDownvoteButton from "./VoteDownvoteButton";
 
 // ----------- TYPES -------------
 interface PostType {
@@ -155,27 +151,11 @@ const SinglePost: React.FC<{ post: PostType }> = ({ post }) => {
 
       {/* Footer Actions */}
       <div className="flex items-center justify-between p-4 border-t border-gray-200">
-        <div className="flex items-center gap-4 text-gray-600">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              openDetails();
-            }}
-            className="flex items-center gap-1 hover:text-blue-500"
-          >
-            <FaThumbsUp /> {post.upVotes}
-          </button>
-
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              openDetails();
-            }}
-            className="flex items-center gap-1 hover:text-red-500"
-          >
-            <FaThumbsDown /> {post.downVotes}
-          </button>
-        </div>
+        <VoteDownvoteButton
+          postId={post._id}
+          upVotes={post.upVotes as unknown as string[]} // cast to string array
+          downVotes={post.downVotes as unknown as string[]}
+        />
 
         <div
           onClick={(e) => {
