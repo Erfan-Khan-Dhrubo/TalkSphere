@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
+import commentRoutes from "./routes/commentRoutes.js";
 
 dotenv.config();
 
@@ -23,6 +24,8 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 // Post API Call
 app.use("/api/posts", postRoutes);
+// Comment API Call
+app.use("/api/comments", commentRoutes);
 
 connectDB().then(() => {
   app.listen(PORT, () => {

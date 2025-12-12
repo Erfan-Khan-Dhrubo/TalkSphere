@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
 import {
   FaThumbsUp,
@@ -12,6 +12,7 @@ import backendApi from "../../utilities/axios";
 import { AuthContext } from "../../config/AuthPorvider";
 import toast from "react-hot-toast";
 import VoteDownvoteButton from "./../../components/feed/newsFeed/VoteDownvoteButton";
+import CommentSection from "../../components/Comment/CommentSection";
 
 interface PostType {
   _id: string;
@@ -42,13 +43,23 @@ const PostDetails: React.FC = () => {
   const [post, setPost] = useState<PostType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [showComments, setShowComments] = useState<boolean>(false);
+  const commentSectionRef = useRef<HTMLDivElement | null>(null);
 
   // Fetch post
   useEffect(() => {
     const fetchPost = async () => {
       try {
         const res = await backendApi.get<PostType>(`/posts/${id}`);
-        setPost(res.data);
+        setPost((prev) => {
+          const existingCount = prev?.commentCount;
+          return {
+            ...res.data,
+            // preserve a previously computed comment count if we already fetched it
+            commentCount:
+              existingCount !== undefined ? existingCount : res.data.commentCount ?? 0,
+          };
+        });
 
         if (presentUser?.savedPosts?.includes(res.data._id)) {
           setIsFavorite(true);
@@ -120,6 +131,39 @@ const PostDetails: React.FC = () => {
   const handleEdit = () => {
     if (!post) return;
     navigate(`/feed/editPost/${post._id}`);
+  };
+
+  // Fetch comment count upfront so the badge is accurate before opening section
+  useEffect(() => {
+    const fetchCount = async () => {
+      if (!id) return;
+      try {
+        const res = await backendApi.get(`/comments/${id}`);
+        const list = res.data as any[];
+        const countNested = (nodes: any[]): number =>
+          nodes.reduce(
+            (acc, n) => acc + 1 + (n.replies ? countNested(n.replies) : 0),
+            0
+          );
+        const total = countNested(list || []);
+        setPost((prev) => (prev ? { ...prev, commentCount: total } : prev));
+      } catch (error) {
+        console.error("Error fetching comment count:", error);
+      }
+    };
+    fetchCount();
+  }, [id]);
+
+  const handleShowComments = () => {
+    setShowComments(true);
+    // Scroll smoothly to comment section when it appears
+    setTimeout(() => {
+      commentSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 0);
+  };
+
+  const handleCommentCountChange = (count: number) => {
+    setPost((prev) => (prev ? { ...prev, commentCount: count } : prev));
   };
 
   if (loading) {
@@ -216,9 +260,21 @@ const PostDetails: React.FC = () => {
           downVotes={post.downVotes as unknown as string[]}
         />
 
-        <div className="flex items-center gap-1 text-gray-700">
+        <button
+          onClick={handleShowComments}
+          className="flex items-center gap-1 text-gray-700 hover:text-blue-600 transition"
+        >
           <FaComment /> {post.commentCount} Comments
-        </div>
+        </button>
+      </div>
+
+      <div ref={commentSectionRef}>
+        {showComments && (
+          <CommentSection
+            postId={post._id}
+            onCountChange={handleCommentCountChange}
+          />
+        )}
       </div>
     </div>
   );
