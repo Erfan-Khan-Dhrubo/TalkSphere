@@ -11,6 +11,7 @@ import {
 import backendApi from "../../utilities/axios";
 import { AuthContext } from "../../config/AuthPorvider";
 import toast from "react-hot-toast";
+import VoteDownvoteButton from "./../../components/feed/newsFeed/VoteDownvoteButton";
 
 interface PostType {
   _id: string;
@@ -209,15 +210,11 @@ const PostDetails: React.FC = () => {
 
       {/* Footer Actions */}
       <div className="flex items-center justify-between border-t pt-4 cursor-pointer">
-        <div className="flex items-center gap-5 text-gray-700">
-          <span className="flex items-center gap-1 hover:text-blue-500">
-            <FaThumbsUp /> {post.upVotes}
-          </span>
-
-          <span className="flex items-center gap-1 hover:text-red-500">
-            <FaThumbsDown /> {post.downVotes}
-          </span>
-        </div>
+        <VoteDownvoteButton
+          postId={post._id}
+          upVotes={post.upVotes as unknown as string[]} // cast to string array
+          downVotes={post.downVotes as unknown as string[]}
+        />
 
         <div className="flex items-center gap-1 text-gray-700">
           <FaComment /> {post.commentCount} Comments

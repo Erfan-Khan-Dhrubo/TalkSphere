@@ -21,16 +21,15 @@ const VoteDownvoteButton: React.FC<VoteProps> = ({
   const [upvoteCount, setUpvoteCount] = useState(0);
   const [downvoteCount, setDownvoteCount] = useState(0);
 
+  // Initialize counts and user vote status
   useEffect(() => {
     setUpvoteCount(upVotes.length);
     setDownvoteCount(downVotes.length);
-  }, []);
 
-  useEffect(() => {
     if (!presentUser) return;
     setHasUpvoted(upVotes.includes(presentUser._id));
     setHasDownvoted(downVotes.includes(presentUser._id));
-  }, [presentUser, upVotes, downVotes]);
+  }, [upVotes, downVotes, presentUser]);
 
   const handleVote = async (type: "upvote" | "downvote") => {
     if (!presentUser) return;
@@ -42,8 +41,13 @@ const VoteDownvoteButton: React.FC<VoteProps> = ({
       });
 
       if (res.status === 200) {
-        // Update local state
         const updatedPost = res.data;
+
+        // Update vote counts
+        setUpvoteCount(updatedPost.upVotes.length);
+        setDownvoteCount(updatedPost.downVotes.length);
+
+        // Update user vote status
         setHasUpvoted(updatedPost.upVotes.includes(presentUser._id));
         setHasDownvoted(updatedPost.downVotes.includes(presentUser._id));
       }
