@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../config/AuthPorvider";
-import { Navigate, useLocation } from "react-router";
+import { Navigate } from "react-router";
 import Loader from "../components/common/Loader";
 import Swal from "sweetalert2";
 
@@ -10,7 +10,7 @@ interface PrivateProps {
 
 const PrivateRoutes: React.FC<PrivateProps> = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
-  const location = useLocation();
+
   const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {

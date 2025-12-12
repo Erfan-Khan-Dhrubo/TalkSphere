@@ -104,3 +104,35 @@ export const updateUserImage = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+// toggle fav
+export const toggleSavePost = async (req, res) => {
+  try {
+    const { userId, postId } = req.body;
+
+    const user = await userModel.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const isSaved = user.savedPosts.includes(postId);
+
+    if (isSaved) {
+      user.savedPosts = user.savedPosts.filter(
+        (id) => id.toString() !== postId
+      );
+    } else {
+      user.savedPosts.push(postId);
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      message: isSaved
+        ? "Post removed from saved posts"
+        : "Post added to saved posts",
+      savedPosts: user.savedPosts,
+    });
+  } catch (error) {
+    console.error("Error in toggleSavePost:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

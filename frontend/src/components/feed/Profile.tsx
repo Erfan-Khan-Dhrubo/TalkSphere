@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaCamera } from "react-icons/fa";
 import { AuthContext } from "../../config/AuthPorvider";
 import Loader from "../common/Loader";
@@ -6,9 +6,26 @@ import { ThumbsDown } from "lucide-react";
 import { ThumbsUp } from "lucide-react";
 import { uploadToCloudinary } from "../../utilities/imageUpload";
 import backendApi from "../../utilities/axios";
+import SinglePost from "./newsFeed/SinglePost";
 
 const Profile: React.FC = () => {
   const { presentUser, setPresentUser } = useContext(AuthContext);
+
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        const res = await backendApi.get("/posts");
+        setPosts(res.data);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      } finally {
+      }
+    }
+
+    fetchPosts();
+  }, []);
 
   const uploadImage = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -82,7 +99,7 @@ const Profile: React.FC = () => {
           </label>
         </div>
 
-        {/* Name and Friends */}
+        {/* Name and vote */}
         <div className="pb-3">
           <h1 className="text-2xl font-semibold">{presentUser.name}</h1>
           <div className="flex py-2 justify-center items-center gap-2">
@@ -100,6 +117,36 @@ const Profile: React.FC = () => {
               {presentUser.totalDownVote.length}
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* My Post */}
+      <div>
+        <div className="max-w-3xl mx-auto mt-10 space-y-6">
+          {/* Section Header */}
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-gray-800">All Posts</h1>
+            <span className="text-gray-500 text-sm">
+              {
+                posts.filter((post: any) => post.userId === presentUser._id)
+                  .length
+              }{" "}
+              posts
+            </span>
+          </div>
+
+          <hr className="border-gray-300" />
+
+          {/* Posts */}
+          {posts.length === 0 ? (
+            <p className="text-center text-gray-500">No posts available</p>
+          ) : (
+            posts
+              .filter((post: any) => post.userId === presentUser._id)
+              .map((filteredPost: any) => (
+                <SinglePost key={filteredPost._id} post={filteredPost} />
+              ))
+          )}
         </div>
       </div>
     </div>
