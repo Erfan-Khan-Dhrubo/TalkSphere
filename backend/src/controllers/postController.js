@@ -37,83 +37,72 @@ export async function getAllPosts(req, res) {
   }
 }
 
-// // ===============================
-// // Get Post by ID
-// // ===============================
-// export async function getPostById(req, res) {
-//   try {
-//     const { id } = req.params;
+// Get Post by ID
+export async function getPostById(req, res) {
+  try {
+    const { id } = req.params;
 
-//     const post = await PostModel.findById(id);
+    const post = await PostModel.findById(id)
+      .populate("userId", "name profilePic") // author info
+      .lean();
 
-//     if (!post) {
-//       return res.status(404).json({ message: "Post not found" });
-//     }
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
 
-//     res.status(200).json(post);
-//   } catch (error) {
-//     console.error("Error fetching post:", error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// }
+    // Add dynamic fields (optional)
+    post.commentCount = post.comments?.length || 0;
+    post.author = post.userId?.name || "Unknown";
+    post.userImage = post.userId?.profilePic || "";
 
-// // ===============================
-// // Update Post
-// // ===============================
-// export async function updatePost(req, res) {
-//   try {
-//     const { id } = req.params;
-//     const { title, content, image } = req.body;
+    res.status(200).json(post);
+  } catch (error) {
+    console.error("Error fetching post:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+}
 
-//     const updatedPost = await PostModel.findByIdAndUpdate(
-//       id,
-//       { title, content, image },
-//       { new: true }
-//     );
+// Update a post
+export async function updatePost(req, res) {
+  try {
+    const { id } = req.params;
+    const { title, content, image } = req.body;
 
-//     if (!updatedPost) {
-//       return res.status(404).json({ message: "Post not found" });
-//     }
+    // Find the post
+    const post = await PostModel.findById(id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
 
-//     res.status(200).json(updatedPost);
-//   } catch (error) {
-//     console.error("Error updating post:", error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// }
+    // Update fields if provided
+    if (title !== undefined) post.title = title;
+    if (content !== undefined) post.content = content;
+    if (image !== undefined) post.image = image;
 
-// // ===============================
-// // Delete Post
-// // ===============================
-// export async function deletePost(req, res) {
-//   try {
-//     const { id } = req.params;
+    const updatedPost = await post.save();
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    console.error("Error updating post:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+}
 
-//     const deletedPost = await PostModel.findByIdAndDelete(id);
+// Delete a post
+export async function deletePost(req, res) {
+  try {
+    const { id } = req.params;
 
-//     if (!deletedPost) {
-//       return res.status(404).json({ message: "Post not found" });
-//     }
+    const post = await PostModel.findById(id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
 
-//     res.status(200).json({ message: "Post deleted successfully" });
-//   } catch (error) {
-//     console.error("Error deleting post:", error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// }
+    // Delete post
+    await PostModel.findByIdAndDelete(id);
 
-// // ===============================
-// // Get All Posts From a User
-// // ===============================
-// export async function getPostsByUser(req, res) {
-//   try {
-//     const { userId } = req.params;
-
-//     const posts = await PostModel.find({ userId });
-
-//     res.status(200).json(posts);
-//   } catch (error) {
-//     console.error("Error fetching user's posts:", error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// }
+    res.status(200).json({ message: "Post deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+}

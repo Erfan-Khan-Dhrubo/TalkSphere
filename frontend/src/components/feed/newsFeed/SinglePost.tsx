@@ -9,62 +9,62 @@ import {
 import { AuthContext } from "../../../config/AuthPorvider";
 import backendApi from "../../../utilities/axios";
 
-interface Post {
+// ----------- TYPES -------------
+interface PostType {
   _id: string;
-  userId: string;
-  author: string;
   title: string;
   content: string;
-  image?: string;
+  author: string;
+  userId: string;
   userImage?: string;
+  image?: string;
   upVotes: number;
   downVotes: number;
   commentCount: number;
   createdAt: string;
 }
 
-interface Props {
-  post: Post;
-}
-
-const SinglePost: React.FC<Props> = ({ post }) => {
+// ----------- COMPONENT -------------
+const SinglePost: React.FC<{ post: PostType }> = ({ post }) => {
   const navigate = useNavigate();
-  const { presentUser } = useContext(AuthContext);
-  const [isFavorite, setIsFavorite] = useState(false);
 
-  // Initialize favorite state
+  const { presentUser } = useContext(AuthContext);
+
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [expanded, setExpanded] = useState<boolean>(false);
+
+  // Set initial favorite state
   useEffect(() => {
-    if (presentUser?.savedPosts?.includes(post._id)) {
-      setIsFavorite(true);
-    } else {
-      setIsFavorite(false);
-    }
+    setIsFavorite(presentUser?.savedPosts?.includes(post._id) || false);
   }, [presentUser, post._id]);
 
   const maxLength = 120;
   const isLong = post.content.length > maxLength;
-  const truncatedText = isLong
-    ? post.content.slice(0, maxLength) + "..."
-    : post.content;
 
-  // Toggle favorite
-  const handleFavorite = async () => {
+  const displayedText =
+    expanded || !isLong
+      ? post.content
+      : post.content.slice(0, maxLength) + "...";
+
+  // ----------- Favorite Logic -------------
+  const toggleFavorite = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!presentUser) return;
+
     try {
       const isAlreadySaved = presentUser.savedPosts.includes(post._id);
       const action = isAlreadySaved ? "remove" : "add";
 
-      // Call backend
       const res = await backendApi.post("/users/save-post", {
         userId: presentUser._id,
         postId: post._id,
         action,
       });
 
-      // Update UI only if backend returns success
       if (res.status === 200) {
         setIsFavorite(!isAlreadySaved);
 
-        // Optional: Update presentUser context savedPosts to reflect change
+        // Update local user savedPosts
         if (action === "add") {
           presentUser.savedPosts.push(post._id);
         } else {
@@ -73,14 +73,19 @@ const SinglePost: React.FC<Props> = ({ post }) => {
           );
         }
       }
-    } catch (error) {
-      console.error("Error updating favorite:", error);
-      // No UI change if backend fails
+    } catch (err) {
+      console.error("Favorite error:", err);
     }
   };
 
+  const openDetails = () => navigate(`/feed/postDetails/${post._id}`);
+
+  // ----------- UI -------------
   return (
-    <div className="max-w-2xl mx-auto mt-10 bg-white border border-gray-300 rounded-lg shadow-md">
+    <div
+      onClick={openDetails}
+      className="max-w-2xl mx-auto mt-10 bg-white border border-gray-300 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition"
+    >
       {/* Header */}
       <div className="flex items-center p-4">
         <img
@@ -88,21 +93,29 @@ const SinglePost: React.FC<Props> = ({ post }) => {
           alt={post.author}
           className="w-10 h-10 rounded-full mr-3"
         />
+
         <div>
-          <p className="font-semibold">{post.author}</p>
+          <p
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/user/${post.userId}`);
+            }}
+            className="font-semibold hover:text-blue-600 cursor-pointer"
+          >
+            {post.author}
+          </p>
           <p className="text-xs text-gray-500">
             {new Date(post.createdAt).toLocaleString()}
           </p>
         </div>
 
-        {/* Favorite Button */}
         <button
-          onClick={handleFavorite}
+          onClick={toggleFavorite}
           className="ml-auto text-gray-500 hover:text-blue-600 transition"
         >
           <FaBookmark
-            className={isFavorite ? "text-blue-600" : "text-gray-400"}
             size={20}
+            className={isFavorite ? "text-blue-600" : "text-gray-400"}
           />
         </button>
       </div>
@@ -110,14 +123,22 @@ const SinglePost: React.FC<Props> = ({ post }) => {
       {/* Title + Content */}
       <div className="px-4">
         <h2 className="font-bold text-lg mb-2">{post.title}</h2>
-        <p className="text-gray-700 whitespace-pre-wrap">
-          {truncatedText}
+
+        <p
+          className="text-gray-700 whitespace-pre-wrap"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {displayedText}
+
           {isLong && (
             <button
-              onClick={() => navigate(`/post/${post._id}`)}
-              className="text-blue-500 font-semibold ml-1 hover:underline"
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpanded(!expanded);
+              }}
+              className="text-blue-500 font-semibold ml-2 hover:underline"
             >
-              See more
+              {expanded ? "See less" : "See more"}
             </button>
           )}
         </p>
@@ -127,24 +148,42 @@ const SinglePost: React.FC<Props> = ({ post }) => {
       {post.image && (
         <img
           src={post.image}
-          alt="Post"
           className="w-full mt-3 object-cover max-h-96"
+          alt=""
         />
       )}
 
-      {/* Actions */}
+      {/* Footer Actions */}
       <div className="flex items-center justify-between p-4 border-t border-gray-200">
         <div className="flex items-center gap-4 text-gray-600">
-          <button className="flex items-center gap-1 hover:text-blue-500 transition">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              openDetails();
+            }}
+            className="flex items-center gap-1 hover:text-blue-500"
+          >
             <FaThumbsUp /> {post.upVotes}
           </button>
 
-          <button className="flex items-center gap-1 hover:text-red-500 transition">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              openDetails();
+            }}
+            className="flex items-center gap-1 hover:text-red-500"
+          >
             <FaThumbsDown /> {post.downVotes}
           </button>
         </div>
 
-        <div className="flex items-center gap-1 text-gray-600">
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            openDetails();
+          }}
+          className="flex items-center gap-1 text-gray-600 cursor-pointer"
+        >
           <FaComment /> {post.commentCount} Comments
         </div>
       </div>
