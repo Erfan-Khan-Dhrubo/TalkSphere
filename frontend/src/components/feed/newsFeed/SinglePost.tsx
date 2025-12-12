@@ -80,7 +80,7 @@ const SinglePost: React.FC<{ post: PostType }> = ({ post }) => {
   return (
     <div
       onClick={openDetails}
-      className="max-w-2xl mx-auto mt-10 bg-white border border-gray-300 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition"
+      className="max-w-2xl mx-auto mt-4 bg-white border border-gray-300 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition"
     >
       {/* Header */}
       <div className="flex items-center p-4">
@@ -153,7 +153,7 @@ const SinglePost: React.FC<{ post: PostType }> = ({ post }) => {
       <div className="flex items-center justify-between p-4 border-t border-gray-200">
         <VoteDownvoteButton
           postId={post._id}
-          upVotes={post.upVotes as unknown as string[]} // cast to string array
+          upVotes={post.upVotes as unknown as string[]}
           downVotes={post.downVotes as unknown as string[]}
         />
 
