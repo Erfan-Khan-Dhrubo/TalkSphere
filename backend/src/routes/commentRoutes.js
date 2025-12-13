@@ -21,4 +21,3 @@ router.post("/upvote/:commentId", authenticate, upvoteComment);
 router.post("/downvote/:commentId", authenticate, downvoteComment);
 
 export default router;
-

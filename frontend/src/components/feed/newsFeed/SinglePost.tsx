@@ -4,6 +4,7 @@ import { FaComment, FaBookmark } from "react-icons/fa";
 import { AuthContext } from "../../../config/AuthPorvider";
 import backendApi from "../../../utilities/axios";
 import VoteDownvoteButton from "./VoteDownvoteButton";
+import ReportPostButton from "../../ReportPostButton";
 
 // ----------- TYPES -------------
 interface PostType {
@@ -157,14 +158,23 @@ const SinglePost: React.FC<{ post: PostType }> = ({ post }) => {
           downVotes={post.downVotes as unknown as string[]}
         />
 
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            openDetails();
-          }}
-          className="flex items-center gap-1 text-gray-600 cursor-pointer"
-        >
-          <FaComment /> {post.commentCount} Comments
+        <div className="flex items-center gap-4 text-gray-600">
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              openDetails();
+            }}
+            className="flex items-center gap-1 cursor-pointer hover:text-blue-600"
+          >
+            <FaComment /> {post.commentCount} Comments
+          </div>
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <ReportPostButton postId={post._id} />
+          </div>
         </div>
       </div>
     </div>

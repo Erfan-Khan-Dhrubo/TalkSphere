@@ -13,6 +13,7 @@ import { AuthContext } from "../../config/AuthPorvider";
 import toast from "react-hot-toast";
 import VoteDownvoteButton from "./../../components/feed/newsFeed/VoteDownvoteButton";
 import CommentSection from "../../components/Comment/CommentSection";
+import ReportPostButton from "../../components/ReportPostButton";
 
 interface PostType {
   _id: string;
@@ -260,12 +261,15 @@ const PostDetails: React.FC = () => {
           downVotes={post.downVotes as unknown as string[]}
         />
 
-        <button
-          onClick={handleShowComments}
-          className="flex items-center gap-1 text-gray-700 hover:text-blue-600 transition"
-        >
-          <FaComment /> {post.commentCount} Comments
-        </button>
+        <div className="flex items-center gap-4 text-gray-700">
+          <button
+            onClick={handleShowComments}
+            className="flex items-center gap-1 hover:text-blue-600 transition"
+          >
+            <FaComment /> {post.commentCount} Comments
+          </button>
+          <ReportPostButton postId={post._id} />
+        </div>
       </div>
 
       <div ref={commentSectionRef}>

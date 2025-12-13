@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
+import reportRoutes from "./routes/reportRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 
 dotenv.config();
@@ -24,6 +25,8 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 // Post API Call
 app.use("/api/posts", postRoutes);
+// Report API Call
+app.use("/api/reports", reportRoutes);
 // Comment API Call
 app.use("/api/comments", commentRoutes);
 
