@@ -68,17 +68,26 @@ const Footer: React.FC = () => {
 
         {/* Right: Social Icons */}
         <div className="flex gap-5 text-gray-600 mt-4 md:mt-0">
-          <a href="#" className="hover:text-blue-600">
+          <a
+            href="https://github.com/"
+            target="_blank"
+            className="hover:text-blue-600"
+          >
             <Github size={22} />
           </a>
-          <a href="#" className="hover:text-blue-600">
+          <a
+            href="https://www.linkedin.com/"
+            target="_blank"
+            className="hover:text-blue-600"
+          >
             <Linkedin size={22} />
           </a>
-          <a href="#" className="hover:text-blue-600">
+          <a
+            href="https://mail.google.com/"
+            target="_blank"
+            className="hover:text-blue-600"
+          >
             <Mail size={22} />
-          </a>
-          <a href="#" className="hover:text-blue-600">
-            <Globe size={22} />
           </a>
         </div>
       </div>

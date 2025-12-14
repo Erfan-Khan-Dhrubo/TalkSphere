@@ -81,7 +81,7 @@ const SinglePost: React.FC<{ post: PostType }> = ({ post }) => {
   return (
     <div
       onClick={openDetails}
-      className="max-w-2xl mx-auto mt-4 bg-white border border-gray-300 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition"
+      className="w-2xl mx-auto mt-4 bg-white border border-gray-300 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition"
     >
       {/* Header */}
       <div className="flex items-center p-4">
@@ -145,7 +145,7 @@ const SinglePost: React.FC<{ post: PostType }> = ({ post }) => {
       {post.image && (
         <img
           src={post.image}
-          className="w-full mt-3 object-cover max-h-96"
+          className="mx-auto mt-3 object-cover max-h-96 max-w-xl"
           alt=""
         />
       )}
