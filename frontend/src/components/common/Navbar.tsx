@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router";
-import { Home, Star, User, PlusSquare, Flag, Bell } from "lucide-react";
+import { Home, Star, User, PlusSquare, Flag, Bell, Users } from "lucide-react";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import { AuthContext } from "../../config/AuthPorvider";
@@ -108,6 +108,23 @@ const Navbar: React.FC = () => {
                 id="tooltip-reports"
                 place="top"
                 content="Reports"
+                className="z-50"
+              />
+
+              <NavLink
+                to="/feed/users"
+                className={({ isActive }) =>
+                  isActive ? "text-blue-600" : "text-gray-500"
+                }
+                data-tooltip-id="tooltip-users"
+              >
+                <Users className="w-6 h-6" />
+              </NavLink>
+
+              <Tooltip
+                id="tooltip-users"
+                place="top"
+                content="Users"
                 className="z-50"
               />
             </>
@@ -232,14 +249,25 @@ const Navbar: React.FC = () => {
           </NavLink>
 
           {presentUser?.role === "admin" && (
-            <NavLink
-              to="/feed/reports"
-              className={({ isActive }) =>
-                isActive ? "text-blue-600" : "text-gray-500"
-              }
-            >
-              <Flag className="w-7 h-7" />
-            </NavLink>
+            <>
+              <NavLink
+                to="/feed/reports"
+                className={({ isActive }) =>
+                  isActive ? "text-blue-600" : "text-gray-500"
+                }
+              >
+                <Flag className="w-7 h-7" />
+              </NavLink>
+
+              <NavLink
+                to="/feed/users"
+                className={({ isActive }) =>
+                  isActive ? "text-blue-600" : "text-gray-500"
+                }
+              >
+                <Users className="w-7 h-7" />
+              </NavLink>
+            </>
           )}
 
           <NavLink

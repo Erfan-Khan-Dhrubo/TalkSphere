@@ -14,6 +14,7 @@ import PostDetails from "../pages/Post/PostDetails";
 import EditPost from "../pages/Post/EditPost";
 import Reports from "../pages/Moderation/Reports";
 import AllAnnouncements from "../pages/Moderation/AllAnnouncements";
+import Users from "../pages/Moderation/Users";
 
 export const router = createBrowserRouter([
   {
@@ -75,6 +76,14 @@ export const router = createBrowserRouter([
         element: (
           <AdminRoutes>
             <Reports />
+          </AdminRoutes>
+        ),
+      },
+      {
+        path: "/feed/users",
+        element: (
+          <AdminRoutes>
+            <Users />
           </AdminRoutes>
         ),
       },
