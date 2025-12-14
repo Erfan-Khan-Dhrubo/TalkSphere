@@ -8,6 +8,7 @@ import NewsFeed from "../pages/Feed/NewsFeed";
 import PrivateRoutes from "./PrivateRoutes";
 import AdminRoutes from "./AdminRoutes";
 import MyProfile from "../pages/Feed/MyProfile";
+import UserProfile from "../pages/Feed/UserProfile";
 import CreatePost from "../pages/Feed/CreatePost";
 import Favorites from "../pages/Feed/Favorites";
 import PostDetails from "../pages/Post/PostDetails";
@@ -52,6 +53,14 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoutes>
             <MyProfile />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/feed/profile/:userId",
+        element: (
+          <PrivateRoutes>
+            <UserProfile />
           </PrivateRoutes>
         ),
       },

@@ -95,7 +95,7 @@ const SinglePost: React.FC<{ post: PostType }> = ({ post }) => {
           <p
             onClick={(e) => {
               e.stopPropagation();
-              navigate(`/user/${post.userId}`);
+              navigate(`/feed/profile/${post.userId}`);
             }}
             className="font-semibold hover:text-blue-600 cursor-pointer"
           >

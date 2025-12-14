@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { useNavigate } from "react-router";
 import {
   FaThumbsDown,
   FaThumbsUp,
@@ -31,6 +32,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
   onVote,
   depth = 0,
 }) => {
+  const navigate = useNavigate();
   const [isReplying, setIsReplying] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [replyText, setReplyText] = useState("");
@@ -42,7 +44,8 @@ const CommentItem: React.FC<CommentItemProps> = ({
   const dislikedBy = comment.dislikedBy || [];
 
   const isOwner = useMemo(() => {
-    if (typeof comment.userId === "string") return comment.userId === currentUserId;
+    if (typeof comment.userId === "string")
+      return comment.userId === currentUserId;
     return comment.userId?._id === currentUserId;
   }, [comment.userId, currentUserId]);
 
@@ -56,9 +59,15 @@ const CommentItem: React.FC<CommentItemProps> = ({
   );
 
   const authorName =
-    typeof comment.userId === "string" ? "Unknown" : comment.userId?.name || "Unknown";
+    typeof comment.userId === "string"
+      ? "Unknown"
+      : comment.userId?.name || "Unknown";
   const authorImage =
-    typeof comment.userId === "string" ? "/default-profile.png" : comment.userId?.profilePic;
+    typeof comment.userId === "string"
+      ? "/default-profile.png"
+      : comment.userId?.profilePic;
+  const authorId =
+    typeof comment.userId === "string" ? comment.userId : comment.userId?._id;
 
   const handleSubmitReply = () => {
     if (!replyText.trim()) return;
@@ -85,7 +94,18 @@ const CommentItem: React.FC<CommentItemProps> = ({
         />
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <p className="font-semibold">{authorName}</p>
+            <p
+              onClick={() => {
+                if (authorId) {
+                  navigate(`/feed/profile/${authorId}`);
+                }
+              }}
+              className={`font-semibold ${
+                authorId ? "hover:text-blue-600 cursor-pointer" : ""
+              }`}
+            >
+              {authorName}
+            </p>
             <span className="text-xs text-gray-500">
               {new Date(comment.createdAt).toLocaleString()}
             </span>
@@ -118,7 +138,9 @@ const CommentItem: React.FC<CommentItemProps> = ({
               </div>
             </div>
           ) : (
-            <p className="mt-2 text-gray-700 whitespace-pre-wrap">{comment.content}</p>
+            <p className="mt-2 text-gray-700 whitespace-pre-wrap">
+              {comment.content}
+            </p>
           )}
 
           <div className="flex items-center gap-4 mt-3 text-sm text-gray-600">
@@ -211,9 +233,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
               className="flex items-center gap-1 text-blue-600 mt-3 text-sm"
             >
               {showReplies ? <FaChevronUp /> : <FaChevronDown />}
-              {showReplies
-                ? "Hide replies"
-                : `Show replies (${replyCount})`}
+              {showReplies ? "Hide replies" : `Show replies (${replyCount})`}
             </button>
           )}
 
@@ -240,4 +260,3 @@ const CommentItem: React.FC<CommentItemProps> = ({
 };
 
 export default CommentItem;
-

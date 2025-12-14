@@ -58,7 +58,9 @@ const PostDetails: React.FC = () => {
             ...res.data,
             // preserve a previously computed comment count if we already fetched it
             commentCount:
-              existingCount !== undefined ? existingCount : res.data.commentCount ?? 0,
+              existingCount !== undefined
+                ? existingCount
+                : res.data.commentCount ?? 0,
           };
         });
 
@@ -198,7 +200,7 @@ const PostDetails: React.FC = () => {
         <div>
           <p
             className="font-semibold hover:text-blue-600 cursor-pointer"
-            onClick={() => navigate(`/user/${post.userId}`)}
+            onClick={() => navigate(`/feed/profile/${post.userId}`)}
           >
             {post.author}
           </p>
