@@ -1,12 +1,40 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useLocation } from "react-router";
 import { Github, Linkedin, Mail, Globe } from "lucide-react";
+import { AuthContext } from "../../config/AuthPorvider";
 
 const Footer: React.FC = () => {
   const location = useLocation();
+  const { presentUser } = useContext(AuthContext);
 
-  // Function to check if route is active
-  const isActive = (path: string) => location.pathname === path;
+  // Function to check if route is active (including sub-routes)
+  const isActive = (path: string) => {
+    if (path === "/feed") {
+      return location.pathname === "/feed" || location.pathname === "/feed/";
+    }
+    return location.pathname.startsWith(path);
+  };
+
+  // Base links for all users
+  const baseLinks = [
+    { name: "Newsfeed", path: "/feed" },
+    { name: "Favorites", path: "/feed/favorites" },
+    { name: "Create Post", path: "/feed/createPost" },
+    { name: "Announcements", path: "/feed/announcements" },
+    { name: "Profile", path: "/feed/profile" },
+  ];
+
+  // Admin-only links
+  const adminLinks = [
+    { name: "Reports", path: "/feed/reports" },
+    { name: "Users", path: "/feed/users" },
+  ];
+
+  // Combine links based on user role
+  const allLinks = [
+    ...baseLinks,
+    ...(presentUser?.role === "admin" ? adminLinks : []),
+  ];
 
   return (
     <footer className="w-full bg-white border-t shadow-inner mt-10 p-6 md:px-16">
@@ -19,18 +47,15 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Center: Quick Links with underline for active route */}
-        <div className="flex gap-8 text-gray-600 mt-4 md:mt-0">
-          {[
-            { name: "Newsfeed", path: "/feed" },
-            { name: "Favourite", path: "/favourite" },
-            { name: "My Profile", path: "/feed/profile" },
-            { name: "Create Post", path: "/feed/createPost" },
-          ].map((link) => (
+        <div className="flex flex-wrap gap-4 md:gap-6 text-gray-600 mt-4 md:mt-0 justify-center">
+          {allLinks.map((link) => (
             <Link
               key={link.path}
               to={link.path}
-              className={`relative py-1 ${
-                isActive(link.path) ? "text-blue-600" : "text-gray-600"
+              className={`relative py-1 transition-colors hover:text-blue-600 ${
+                isActive(link.path)
+                  ? "text-blue-600 font-semibold"
+                  : "text-gray-600"
               }`}
             >
               {link.name}

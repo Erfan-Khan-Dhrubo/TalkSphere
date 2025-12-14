@@ -26,7 +26,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="w-full bg-white shadow-md px-10 py-3 ">
+    <nav className="fixed top-0 left-0 right-0 w-full bg-white shadow-md px-10 py-3 z-50">
       {/* ------------ DESKTOP NAVBAR (md and up) ------------ */}
       <div className="hidden md:flex justify-between items-center">
         {/* LEFT LOGO */}
@@ -169,14 +169,26 @@ const Navbar: React.FC = () => {
         <div className="relative">
           <img
             onClick={() => setMenuOpen(!menuOpen)}
-            //src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-            src={presentUser.profilePic}
-            className="w-10 h-10 rounded-full cursor-pointer border"
+            src={
+              presentUser.profilePic ||
+              "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            }
+            className="w-10 h-10 rounded-full cursor-pointer border hover:ring-2 ring-blue-500 transition"
+            alt="Profile"
           />
 
           {/* DROPDOWN */}
           {menuOpen && (
-            <div className="absolute right-0 mt-3 bg-white shadow-lg rounded-lg py-2 w-40">
+            <div className="absolute right-0 mt-3 bg-white shadow-lg rounded-lg py-2 w-40 z-50">
+              <button
+                className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                onClick={() => {
+                  setMenuOpen(false);
+                  navigate("/feed/profile");
+                }}
+              >
+                Profile
+              </button>
               <button
                 className="w-full text-left px-4 py-2 hover:bg-gray-100"
                 onClick={() => {
@@ -208,12 +220,25 @@ const Navbar: React.FC = () => {
           <div className="relative">
             <img
               onClick={() => setMenuOpen(!menuOpen)}
-              src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-              className="w-9 h-9 rounded-full cursor-pointer border"
+              src={
+                presentUser.profilePic ||
+                "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+              }
+              className="w-9 h-9 rounded-full cursor-pointer border hover:ring-2 ring-blue-500 transition"
+              alt="Profile"
             />
 
             {menuOpen && (
-              <div className="absolute right-0 mt-3 bg-white shadow-lg rounded-lg py-2 w-36">
+              <div className="absolute right-0 mt-3 bg-white shadow-lg rounded-lg py-2 w-36 z-50">
+                <button
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    navigate("/feed/profile");
+                  }}
+                >
+                  Profile
+                </button>
                 <button
                   className="w-full text-left px-4 py-2 hover:bg-gray-100"
                   onClick={() => {
