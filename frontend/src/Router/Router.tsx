@@ -6,6 +6,7 @@ import Signup from "../pages/Home/Signup";
 import Feed from "../pages/Feed/Feed";
 import NewsFeed from "../pages/Feed/NewsFeed";
 import PrivateRoutes from "./PrivateRoutes";
+import AdminRoutes from "./AdminRoutes";
 import MyProfile from "../pages/Feed/MyProfile";
 import CreatePost from "../pages/Feed/CreatePost";
 import Favorites from "../pages/Feed/Favorites";
@@ -72,9 +73,9 @@ export const router = createBrowserRouter([
       {
         path: "/feed/reports",
         element: (
-          <PrivateRoutes>
+          <AdminRoutes>
             <Reports />
-          </PrivateRoutes>
+          </AdminRoutes>
         ),
       },
       {

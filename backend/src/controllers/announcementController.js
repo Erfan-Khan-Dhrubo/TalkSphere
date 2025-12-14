@@ -10,6 +10,19 @@ export const createAnnouncement = async (req, res) => {
       return res.status(400).json({ message: "Title and content are required" });
     }
 
+    // Check if user is admin
+    if (userId) {
+      const user = await userModel.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      if (user.role !== "admin") {
+        return res.status(403).json({ message: "Only admins can create announcements" });
+      }
+    } else {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
     const announcement = new Announcement({
       userId,
       title: title.trim(),
@@ -65,10 +78,24 @@ export const getAllAnnouncements = async (req, res) => {
 export const deleteAnnouncement = async (req, res) => {
   try {
     const { id } = req.params;
+    const { userId } = req.body; // Get userId from request body
 
     const announcement = await Announcement.findById(id);
     if (!announcement) {
       return res.status(404).json({ message: "Announcement not found" });
+    }
+
+    // Check if user is admin
+    if (userId) {
+      const user = await userModel.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      if (user.role !== "admin") {
+        return res.status(403).json({ message: "Only admins can delete announcements" });
+      }
+    } else {
+      return res.status(400).json({ message: "User ID is required" });
     }
 
     await Announcement.findByIdAndDelete(id);

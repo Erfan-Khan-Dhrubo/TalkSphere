@@ -92,22 +92,26 @@ const Navbar: React.FC = () => {
             className="z-50"
           />
 
-          <NavLink
-            to="/feed/reports"
-            className={({ isActive }) =>
-              isActive ? "text-blue-600" : "text-gray-500"
-            }
-            data-tooltip-id="tooltip-reports"
-          >
-            <Flag className="w-6 h-6" />
-          </NavLink>
+          {presentUser?.role === "admin" && (
+            <>
+              <NavLink
+                to="/feed/reports"
+                className={({ isActive }) =>
+                  isActive ? "text-blue-600" : "text-gray-500"
+                }
+                data-tooltip-id="tooltip-reports"
+              >
+                <Flag className="w-6 h-6" />
+              </NavLink>
 
-          <Tooltip
-            id="tooltip-reports"
-            place="top"
-            content="Reports"
-            className="z-50"
-          />
+              <Tooltip
+                id="tooltip-reports"
+                place="top"
+                content="Reports"
+                className="z-50"
+              />
+            </>
+          )}
 
           <NavLink
             to="/feed/announcements"
@@ -227,14 +231,16 @@ const Navbar: React.FC = () => {
             <Star className="w-7 h-7" />
           </NavLink>
 
-          <NavLink
-            to="/feed/reports"
-            className={({ isActive }) =>
-              isActive ? "text-blue-600" : "text-gray-500"
-            }
-          >
-            <Flag className="w-7 h-7" />
-          </NavLink>
+          {presentUser?.role === "admin" && (
+            <NavLink
+              to="/feed/reports"
+              className={({ isActive }) =>
+                isActive ? "text-blue-600" : "text-gray-500"
+              }
+            >
+              <Flag className="w-7 h-7" />
+            </NavLink>
+          )}
 
           <NavLink
             to="/feed/announcements"

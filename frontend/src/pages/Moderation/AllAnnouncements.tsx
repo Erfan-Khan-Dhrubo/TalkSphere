@@ -41,14 +41,23 @@ const AllAnnouncements: React.FC = () => {
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this announcement?")) return;
 
+    if (!presentUser) {
+      toast.error("You must be logged in");
+      return;
+    }
+
     try {
-      await backendApi.delete(`/announcements/${id}`);
+      await backendApi.delete(`/announcements/${id}`, {
+        data: { userId: presentUser._id },
+      });
       toast.success("Announcement deleted successfully");
       fetchAnnouncements();
     } catch (error: any) {
       toast.error(error?.response?.data?.message || "Failed to delete announcement");
     }
   };
+
+  const isAdmin = presentUser?.role === "admin";
 
   const isOwner = (announcement: Announcement) => {
     return (
@@ -74,13 +83,15 @@ const AllAnnouncements: React.FC = () => {
           <Bell className="w-8 h-8" />
           All Announcements
         </h1>
-        <button
-          onClick={() => setShowCreate(!showCreate)}
-          className="btn btn-primary flex items-center gap-2"
-        >
-          <Plus className="w-5 h-5" />
-          {showCreate ? "Cancel" : "Create New"}
-        </button>
+        {isAdmin && (
+          <button
+            onClick={() => setShowCreate(!showCreate)}
+            className="btn btn-primary flex items-center gap-2"
+          >
+            <Plus className="w-5 h-5" />
+            {showCreate ? "Cancel" : "Create New"}
+          </button>
+        )}
       </div>
 
       {showCreate && (
@@ -133,7 +144,7 @@ const AllAnnouncements: React.FC = () => {
                     {announcement.content}
                   </p>
                 </div>
-                {isOwner(announcement) && (
+                {isAdmin && (
                   <button
                     onClick={() => handleDelete(announcement._id)}
                     className="ml-4 text-white hover:text-red-200 transition p-2 rounded-lg hover:bg-white/20"
