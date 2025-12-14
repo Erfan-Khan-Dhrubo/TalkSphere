@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router";
-import { Home, Star, User, PlusSquare } from "lucide-react";
+import { Home, Star, User, PlusSquare, Flag, Bell } from "lucide-react";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import { AuthContext } from "../../config/AuthPorvider";
@@ -76,23 +76,6 @@ const Navbar: React.FC = () => {
           />
 
           <NavLink
-            to="/feed/profile"
-            className={({ isActive }) =>
-              isActive ? "text-blue-600" : "text-gray-500"
-            }
-            data-tooltip-id="tooltip-profile"
-          >
-            <User className="w-6 h-6" />
-          </NavLink>
-
-          <Tooltip
-            id="tooltip-profile"
-            place="top"
-            content="Profile"
-            className="z-50"
-          />
-
-          <NavLink
             to="/feed/createPost"
             className={({ isActive }) =>
               isActive ? "text-blue-600" : "text-gray-500"
@@ -106,6 +89,57 @@ const Navbar: React.FC = () => {
             id="tooltip-create"
             place="top"
             content="Create Post"
+            className="z-50"
+          />
+
+          <NavLink
+            to="/feed/reports"
+            className={({ isActive }) =>
+              isActive ? "text-blue-600" : "text-gray-500"
+            }
+            data-tooltip-id="tooltip-reports"
+          >
+            <Flag className="w-6 h-6" />
+          </NavLink>
+
+          <Tooltip
+            id="tooltip-reports"
+            place="top"
+            content="Reports"
+            className="z-50"
+          />
+
+          <NavLink
+            to="/feed/announcements"
+            className={({ isActive }) =>
+              isActive ? "text-blue-600" : "text-gray-500"
+            }
+            data-tooltip-id="tooltip-announcements"
+          >
+            <Bell className="w-6 h-6" />
+          </NavLink>
+
+          <Tooltip
+            id="tooltip-announcements"
+            place="top"
+            content="Announcements"
+            className="z-50"
+          />
+
+          <NavLink
+            to="/feed/profile"
+            className={({ isActive }) =>
+              isActive ? "text-blue-600" : "text-gray-500"
+            }
+            data-tooltip-id="tooltip-profile"
+          >
+            <User className="w-6 h-6" />
+          </NavLink>
+
+          <Tooltip
+            id="tooltip-profile"
+            place="top"
+            content="Profile"
             className="z-50"
           />
         </div>
@@ -176,7 +210,7 @@ const Navbar: React.FC = () => {
         {/* ROW 2: ROUTE ICONS */}
         <div className="flex justify-between items-center px-4 pt-2">
           <NavLink
-            to="/newsfeed"
+            to="/feed"
             className={({ isActive }) =>
               isActive ? "text-blue-600" : "text-gray-500"
             }
@@ -185,7 +219,7 @@ const Navbar: React.FC = () => {
           </NavLink>
 
           <NavLink
-            to="/favourite"
+            to="/feed/favorites"
             className={({ isActive }) =>
               isActive ? "text-blue-600" : "text-gray-500"
             }
@@ -194,7 +228,25 @@ const Navbar: React.FC = () => {
           </NavLink>
 
           <NavLink
-            to="/profile"
+            to="/feed/reports"
+            className={({ isActive }) =>
+              isActive ? "text-blue-600" : "text-gray-500"
+            }
+          >
+            <Flag className="w-7 h-7" />
+          </NavLink>
+
+          <NavLink
+            to="/feed/announcements"
+            className={({ isActive }) =>
+              isActive ? "text-blue-600" : "text-gray-500"
+            }
+          >
+            <Bell className="w-7 h-7" />
+          </NavLink>
+
+          <NavLink
+            to="/feed/profile"
             className={({ isActive }) =>
               isActive ? "text-blue-600" : "text-gray-500"
             }

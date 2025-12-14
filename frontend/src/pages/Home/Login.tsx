@@ -2,7 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { Link, useNavigate } from "react-router";
 import { AuthContext } from "../../config/AuthPorvider";
+import { signOut, getAuth } from "firebase/auth";
+import app from "../../config/firebase.config";
 import toast from "react-hot-toast";
+import backendApi from "../../utilities/axios";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -28,6 +31,8 @@ const Login: React.FC = () => {
     }
   }, [presentUser]);
 
+  const auth = getAuth(app);
+
   // Type the event as FormEvent<HTMLFormElement>
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,14 +42,43 @@ const Login: React.FC = () => {
       const userCredential = await signIn(email, password);
       const user = userCredential.user;
 
-      toast.success("Login Successful");
-      setPresentUser(user);
+      // Check if user is banned before proceeding
+      try {
+        const res = await backendApi.get(`/users/email/${user.email}`);
+        const userData = res.data;
 
-      // After success
-      setEmail("");
-      setPassword("");
+        if (userData?.isBanned) {
+          // Sign out the user immediately
+          await signOut(auth);
+          toast.error("Your account has been banned. You cannot access this platform.");
+          setEmail("");
+          setPassword("");
+          setLoading(false);
+          return;
+        }
 
-      navigate("/feed");
+        toast.success("Login Successful");
+        setPresentUser(userData);
+
+        // After success
+        setEmail("");
+        setPassword("");
+
+        navigate("/feed");
+      } catch (userErr: any) {
+        if (userErr?.response?.status === 404) {
+          // User not found in backend, still allow login
+          toast.success("Login Successful");
+          setPresentUser(user);
+          setEmail("");
+          setPassword("");
+          navigate("/feed");
+        } else {
+          // If there's an error checking user, still sign out to be safe
+          await signOut(auth);
+          throw userErr;
+        }
+      }
     } catch (err) {
       console.log(err);
       toast.error("Login Failed. Check your credentials.");
@@ -53,14 +87,39 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    createUserWithGoogle()
-      .then((userCredential: any) => {
-        setPresentUser(userCredential.user);
+  const handleGoogleLogin = async () => {
+    try {
+      const userCredential: any = await createUserWithGoogle();
+      const user = userCredential.user;
+
+      // Check if user is banned
+      try {
+        const res = await backendApi.get(`/users/email/${user.email}`);
+        const userData = res.data;
+
+        if (userData?.isBanned) {
+          await signOut(auth);
+          toast.error("Your account has been banned. You cannot access this platform.");
+          return;
+        }
+
+        setPresentUser(userData);
         toast.success("Login Successful");
         navigate("/feed");
-      })
-      .catch(() => toast.error("Google Login Failed"));
+      } catch (userErr: any) {
+        if (userErr?.response?.status === 404) {
+          // User not found in backend, still allow login
+          setPresentUser(userCredential.user);
+          toast.success("Login Successful");
+          navigate("/feed");
+        } else {
+          await signOut(auth);
+          throw userErr;
+        }
+      }
+    } catch (err) {
+      toast.error("Google Login Failed");
+    }
   };
 
   const handleForgotPassword = async (e: React.FormEvent) => {

@@ -11,6 +11,8 @@ import CreatePost from "../pages/Feed/CreatePost";
 import Favorites from "../pages/Feed/Favorites";
 import PostDetails from "../pages/Post/PostDetails";
 import EditPost from "../pages/Post/EditPost";
+import Reports from "../pages/Moderation/Reports";
+import AllAnnouncements from "../pages/Moderation/AllAnnouncements";
 
 export const router = createBrowserRouter([
   {
@@ -64,6 +66,22 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoutes>
             <Favorites />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/feed/reports",
+        element: (
+          <PrivateRoutes>
+            <Reports />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/feed/announcements",
+        element: (
+          <PrivateRoutes>
+            <AllAnnouncements />
           </PrivateRoutes>
         ),
       },

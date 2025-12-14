@@ -7,8 +7,10 @@ import {
   FaTrash,
   FaChevronDown,
   FaChevronUp,
+  FaFlag,
 } from "react-icons/fa";
 import type { CommentNode } from "./CommentSection";
+import ReportCommentModal from "../ReportCommentModal";
 
 interface CommentItemProps {
   comment: CommentNode;
@@ -34,6 +36,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
   const [replyText, setReplyText] = useState("");
   const [editText, setEditText] = useState(comment.content);
   const [showReplies, setShowReplies] = useState(true);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
 
   const likedBy = comment.likedBy || [];
   const dislikedBy = comment.dislikedBy || [];
@@ -157,7 +160,21 @@ const CommentItem: React.FC<CommentItemProps> = ({
                 </button>
               </>
             )}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setReportModalOpen(true);
+              }}
+              className="flex items-center gap-1 hover:text-red-500 text-sm text-red-500 font-semibold"
+            >
+              <FaFlag /> Report
+            </button>
           </div>
+          <ReportCommentModal
+            commentId={comment._id}
+            open={reportModalOpen}
+            onClose={() => setReportModalOpen(false)}
+          />
 
           {isReplying && (
             <div className="mt-3">

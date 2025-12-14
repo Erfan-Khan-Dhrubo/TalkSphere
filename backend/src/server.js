@@ -6,6 +6,7 @@ import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
+import announcementRoutes from "./routes/announcementRoutes.js";
 
 dotenv.config();
 
@@ -29,6 +30,8 @@ app.use("/api/posts", postRoutes);
 app.use("/api/reports", reportRoutes);
 // Comment API Call
 app.use("/api/comments", commentRoutes);
+// Announcement API Call
+app.use("/api/announcements", announcementRoutes);
 
 connectDB().then(() => {
   app.listen(PORT, () => {

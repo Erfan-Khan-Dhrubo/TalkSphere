@@ -5,7 +5,12 @@ const ReportSchema = new mongoose.Schema(
     postId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Post",
-      required: true,
+      default: null,
+    },
+    commentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+      default: null,
     },
     reason: {
       type: String,
@@ -19,7 +24,7 @@ const ReportSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending"],
+      enum: ["pending", "resolved"],
       default: "pending",
     },
   },
