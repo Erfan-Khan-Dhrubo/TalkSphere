@@ -1,4 +1,5 @@
 import userModel from "../models/userModel.js";
+import PostModel from "../models/postModel.js";
 
 // Creating User
 export async function createUser(req, res) {
@@ -45,6 +46,24 @@ export const getUserByEmail = async (req, res) => {
     const { email } = req.params;
 
     const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Find user by ID
+export const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await userModel.findById(id);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -133,6 +152,64 @@ export const toggleSavePost = async (req, res) => {
     });
   } catch (error) {
     console.error("Error in toggleSavePost:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// Get all users with activity summary (calculated dynamically)
+export const getAllUsers = async (req, res) => {
+  try {
+    // Get all users
+    const users = await userModel
+      .find()
+      .select("name email role isBanned profilePic createdAt");
+
+    // Get all posts to calculate post counts and votes
+    const allPosts = await PostModel.find().select("userId upVotes downVotes");
+
+    // Calculate activity for each user
+    const usersWithActivity = await Promise.all(
+      users.map(async (user) => {
+        const userId = user._id;
+
+        // Count posts by this user
+        const totalPosts = allPosts.filter(
+          (post) => post.userId.toString() === userId.toString()
+        ).length;
+
+        // Calculate total upvotes received (from posts owned by this user)
+        const userPosts = allPosts.filter(
+          (post) => post.userId.toString() === userId.toString()
+        );
+        const totalUpvotes = userPosts.reduce(
+          (sum, post) => sum + (post.upVotes?.length || 0),
+          0
+        );
+
+        // Calculate total downvotes received (from posts owned by this user)
+        const totalDownvotes = userPosts.reduce(
+          (sum, post) => sum + (post.downVotes?.length || 0),
+          0
+        );
+
+        return {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          profilePic: user.profilePic,
+          isBanned: user.isBanned,
+          createdAt: user.createdAt,
+          totalPosts,
+          totalUpvotes,
+          totalDownvotes,
+        };
+      })
+    );
+
+    res.status(200).json(usersWithActivity);
+  } catch (error) {
+    console.error("Error fetching users with activity:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

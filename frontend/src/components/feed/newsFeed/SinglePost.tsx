@@ -1,13 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import {
-  FaThumbsUp,
-  FaThumbsDown,
-  FaComment,
-  FaBookmark,
-} from "react-icons/fa";
+import { FaComment, FaBookmark } from "react-icons/fa";
 import { AuthContext } from "../../../config/AuthPorvider";
 import backendApi from "../../../utilities/axios";
+import VoteDownvoteButton from "./VoteDownvoteButton";
+import ReportPostButton from "../../ReportPostButton";
 
 // ----------- TYPES -------------
 interface PostType {
@@ -84,7 +81,7 @@ const SinglePost: React.FC<{ post: PostType }> = ({ post }) => {
   return (
     <div
       onClick={openDetails}
-      className="max-w-2xl mx-auto mt-10 bg-white border border-gray-300 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition"
+      className="max-w-2xl mx-auto mt-4 bg-white border border-gray-300 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition"
     >
       {/* Header */}
       <div className="flex items-center p-4">
@@ -98,7 +95,7 @@ const SinglePost: React.FC<{ post: PostType }> = ({ post }) => {
           <p
             onClick={(e) => {
               e.stopPropagation();
-              navigate(`/user/${post.userId}`);
+              navigate(`/feed/profile/${post.userId}`);
             }}
             className="font-semibold hover:text-blue-600 cursor-pointer"
           >
@@ -155,36 +152,29 @@ const SinglePost: React.FC<{ post: PostType }> = ({ post }) => {
 
       {/* Footer Actions */}
       <div className="flex items-center justify-between p-4 border-t border-gray-200">
+        <VoteDownvoteButton
+          postId={post._id}
+          upVotes={post.upVotes as unknown as string[]}
+          downVotes={post.downVotes as unknown as string[]}
+        />
+
         <div className="flex items-center gap-4 text-gray-600">
-          <button
+          <div
             onClick={(e) => {
               e.stopPropagation();
               openDetails();
             }}
-            className="flex items-center gap-1 hover:text-blue-500"
+            className="flex items-center gap-1 cursor-pointer hover:text-blue-600"
           >
-            <FaThumbsUp /> {post.upVotes}
-          </button>
-
-          <button
+            <FaComment /> {post.commentCount} Comments
+          </div>
+          <div
             onClick={(e) => {
               e.stopPropagation();
-              openDetails();
             }}
-            className="flex items-center gap-1 hover:text-red-500"
           >
-            <FaThumbsDown /> {post.downVotes}
-          </button>
-        </div>
-
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            openDetails();
-          }}
-          className="flex items-center gap-1 text-gray-600 cursor-pointer"
-        >
-          <FaComment /> {post.commentCount} Comments
+            <ReportPostButton postId={post._id} />
+          </div>
         </div>
       </div>
     </div>

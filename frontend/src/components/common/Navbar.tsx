@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router";
-import { Home, Star, User, PlusSquare } from "lucide-react";
+import { Home, Star, User, PlusSquare, Flag, Bell, Users } from "lucide-react";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import { AuthContext } from "../../config/AuthPorvider";
@@ -26,7 +26,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="w-full bg-white shadow-md px-10 py-3 ">
+    <nav className="fixed top-0 left-0 right-0 w-full bg-white shadow-md px-10 py-3 z-50">
       {/* ------------ DESKTOP NAVBAR (md and up) ------------ */}
       <div className="hidden md:flex justify-between items-center">
         {/* LEFT LOGO */}
@@ -76,23 +76,6 @@ const Navbar: React.FC = () => {
           />
 
           <NavLink
-            to="/feed/profile"
-            className={({ isActive }) =>
-              isActive ? "text-blue-600" : "text-gray-500"
-            }
-            data-tooltip-id="tooltip-profile"
-          >
-            <User className="w-6 h-6" />
-          </NavLink>
-
-          <Tooltip
-            id="tooltip-profile"
-            place="top"
-            content="Profile"
-            className="z-50"
-          />
-
-          <NavLink
             to="/feed/createPost"
             className={({ isActive }) =>
               isActive ? "text-blue-600" : "text-gray-500"
@@ -108,20 +91,104 @@ const Navbar: React.FC = () => {
             content="Create Post"
             className="z-50"
           />
+
+          {presentUser?.role === "admin" && (
+            <>
+              <NavLink
+                to="/feed/reports"
+                className={({ isActive }) =>
+                  isActive ? "text-blue-600" : "text-gray-500"
+                }
+                data-tooltip-id="tooltip-reports"
+              >
+                <Flag className="w-6 h-6" />
+              </NavLink>
+
+              <Tooltip
+                id="tooltip-reports"
+                place="top"
+                content="Reports"
+                className="z-50"
+              />
+
+              <NavLink
+                to="/feed/users"
+                className={({ isActive }) =>
+                  isActive ? "text-blue-600" : "text-gray-500"
+                }
+                data-tooltip-id="tooltip-users"
+              >
+                <Users className="w-6 h-6" />
+              </NavLink>
+
+              <Tooltip
+                id="tooltip-users"
+                place="top"
+                content="Users"
+                className="z-50"
+              />
+            </>
+          )}
+
+          <NavLink
+            to="/feed/announcements"
+            className={({ isActive }) =>
+              isActive ? "text-blue-600" : "text-gray-500"
+            }
+            data-tooltip-id="tooltip-announcements"
+          >
+            <Bell className="w-6 h-6" />
+          </NavLink>
+
+          <Tooltip
+            id="tooltip-announcements"
+            place="top"
+            content="Announcements"
+            className="z-50"
+          />
+
+          <NavLink
+            to="/feed/profile"
+            className={({ isActive }) =>
+              isActive ? "text-blue-600" : "text-gray-500"
+            }
+            data-tooltip-id="tooltip-profile"
+          >
+            <User className="w-6 h-6" />
+          </NavLink>
+
+          <Tooltip
+            id="tooltip-profile"
+            place="top"
+            content="Profile"
+            className="z-50"
+          />
         </div>
 
         {/* RIGHT PROFILE */}
         <div className="relative">
           <img
             onClick={() => setMenuOpen(!menuOpen)}
-            //src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-            src={presentUser.profilePic}
-            className="w-10 h-10 rounded-full cursor-pointer border"
+            src={
+              presentUser.profilePic ||
+              "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            }
+            className="w-10 h-10 rounded-full cursor-pointer border hover:ring-2 ring-blue-500 transition"
+            alt="Profile"
           />
 
           {/* DROPDOWN */}
           {menuOpen && (
-            <div className="absolute right-0 mt-3 bg-white shadow-lg rounded-lg py-2 w-40">
+            <div className="absolute right-0 mt-3 bg-white shadow-lg rounded-lg py-2 w-40 z-50">
+              <button
+                className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                onClick={() => {
+                  setMenuOpen(false);
+                  navigate("/feed/profile");
+                }}
+              >
+                Profile
+              </button>
               <button
                 className="w-full text-left px-4 py-2 hover:bg-gray-100"
                 onClick={() => {
@@ -153,12 +220,25 @@ const Navbar: React.FC = () => {
           <div className="relative">
             <img
               onClick={() => setMenuOpen(!menuOpen)}
-              src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-              className="w-9 h-9 rounded-full cursor-pointer border"
+              src={
+                presentUser.profilePic ||
+                "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+              }
+              className="w-9 h-9 rounded-full cursor-pointer border hover:ring-2 ring-blue-500 transition"
+              alt="Profile"
             />
 
             {menuOpen && (
-              <div className="absolute right-0 mt-3 bg-white shadow-lg rounded-lg py-2 w-36">
+              <div className="absolute right-0 mt-3 bg-white shadow-lg rounded-lg py-2 w-36 z-50">
+                <button
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    navigate("/feed/profile");
+                  }}
+                >
+                  Profile
+                </button>
                 <button
                   className="w-full text-left px-4 py-2 hover:bg-gray-100"
                   onClick={() => {
@@ -176,7 +256,7 @@ const Navbar: React.FC = () => {
         {/* ROW 2: ROUTE ICONS */}
         <div className="flex justify-between items-center px-4 pt-2">
           <NavLink
-            to="/newsfeed"
+            to="/feed"
             className={({ isActive }) =>
               isActive ? "text-blue-600" : "text-gray-500"
             }
@@ -185,7 +265,7 @@ const Navbar: React.FC = () => {
           </NavLink>
 
           <NavLink
-            to="/favourite"
+            to="/feed/favorites"
             className={({ isActive }) =>
               isActive ? "text-blue-600" : "text-gray-500"
             }
@@ -193,8 +273,39 @@ const Navbar: React.FC = () => {
             <Star className="w-7 h-7" />
           </NavLink>
 
+          {presentUser?.role === "admin" && (
+            <>
+              <NavLink
+                to="/feed/reports"
+                className={({ isActive }) =>
+                  isActive ? "text-blue-600" : "text-gray-500"
+                }
+              >
+                <Flag className="w-7 h-7" />
+              </NavLink>
+
+              <NavLink
+                to="/feed/users"
+                className={({ isActive }) =>
+                  isActive ? "text-blue-600" : "text-gray-500"
+                }
+              >
+                <Users className="w-7 h-7" />
+              </NavLink>
+            </>
+          )}
+
           <NavLink
-            to="/profile"
+            to="/feed/announcements"
+            className={({ isActive }) =>
+              isActive ? "text-blue-600" : "text-gray-500"
+            }
+          >
+            <Bell className="w-7 h-7" />
+          </NavLink>
+
+          <NavLink
+            to="/feed/profile"
             className={({ isActive }) =>
               isActive ? "text-blue-600" : "text-gray-500"
             }

@@ -13,6 +13,7 @@ import {
 } from "firebase/auth";
 import app from "./firebase.config";
 import backendApi from "../utilities/axios";
+import toast from "react-hot-toast";
 
 export const AuthContext = createContext<any>(null);
 
@@ -42,20 +43,43 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Observer
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
 
       const fetchNote = async () => {
         try {
-          const res = await backendApi.get(
-            `/users/email/${currentUser?.email}`
-          ); // This sends a GET request to backend.
-          setPresentUser(res.data);
-        } catch (error) {
-          console.log("Error in fetching note", error);
+          if (currentUser?.email) {
+            const res = await backendApi.get(
+              `/users/email/${currentUser.email}`
+            ); // This sends a GET request to backend.
+            const userData = res.data;
+            
+            // Check if user is banned
+            if (userData?.isBanned) {
+              // Sign out banned user
+              await signOut(auth);
+              setPresentUser(null);
+              setUser(null);
+              toast.error("Your account has been banned. Access denied.");
+              return;
+            }
+            
+            setPresentUser(userData);
+          }
+        } catch (error: any) {
+          // If user not found in backend, still allow (might be new user)
+          if (error?.response?.status !== 404) {
+            console.log("Error in fetching note", error);
+          }
         }
       };
-      fetchNote();
+      
+      if (currentUser) {
+        await fetchNote();
+      } else {
+        setPresentUser(null);
+      }
+      
       setLoading(false);
     });
     return () => unsubscribe();
@@ -100,7 +124,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setPresentUser,
   };
 
-  return <AuthContext value={authData}>{children}</AuthContext>;
+  return <AuthContext.Provider value={authData}>{children}</AuthContext.Provider>;
 };
 
 export default AuthProvider;

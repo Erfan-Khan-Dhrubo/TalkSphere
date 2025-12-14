@@ -6,11 +6,16 @@ import Signup from "../pages/Home/Signup";
 import Feed from "../pages/Feed/Feed";
 import NewsFeed from "../pages/Feed/NewsFeed";
 import PrivateRoutes from "./PrivateRoutes";
+import AdminRoutes from "./AdminRoutes";
 import MyProfile from "../pages/Feed/MyProfile";
+import UserProfile from "../pages/Feed/UserProfile";
 import CreatePost from "../pages/Feed/CreatePost";
 import Favorites from "../pages/Feed/Favorites";
 import PostDetails from "../pages/Post/PostDetails";
 import EditPost from "../pages/Post/EditPost";
+import Reports from "../pages/Moderation/Reports";
+import AllAnnouncements from "../pages/Moderation/AllAnnouncements";
+import Users from "../pages/Moderation/Users";
 
 export const router = createBrowserRouter([
   {
@@ -52,6 +57,14 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: "/feed/profile/:userId",
+        element: (
+          <PrivateRoutes>
+            <UserProfile />
+          </PrivateRoutes>
+        ),
+      },
+      {
         path: "/feed/createPost",
         element: (
           <PrivateRoutes>
@@ -64,6 +77,30 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoutes>
             <Favorites />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/feed/reports",
+        element: (
+          <AdminRoutes>
+            <Reports />
+          </AdminRoutes>
+        ),
+      },
+      {
+        path: "/feed/users",
+        element: (
+          <AdminRoutes>
+            <Users />
+          </AdminRoutes>
+        ),
+      },
+      {
+        path: "/feed/announcements",
+        element: (
+          <PrivateRoutes>
+            <AllAnnouncements />
           </PrivateRoutes>
         ),
       },
