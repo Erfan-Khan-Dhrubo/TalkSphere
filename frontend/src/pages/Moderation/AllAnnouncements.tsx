@@ -53,20 +53,13 @@ const AllAnnouncements: React.FC = () => {
       toast.success("Announcement deleted successfully");
       fetchAnnouncements();
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Failed to delete announcement");
+      toast.error(
+        error?.response?.data?.message || "Failed to delete announcement"
+      );
     }
   };
 
   const isAdmin = presentUser?.role === "admin";
-
-  const isOwner = (announcement: Announcement) => {
-    return (
-      presentUser &&
-      (announcement.userId === presentUser._id ||
-        (typeof announcement.userId === "object" &&
-          announcement.userId?._id === presentUser._id))
-    );
-  };
 
   if (loading) {
     return (
@@ -133,7 +126,9 @@ const AllAnnouncements: React.FC = () => {
                       />
                     )}
                     <div>
-                      <h3 className="font-bold text-xl">{announcement.title}</h3>
+                      <h3 className="font-bold text-xl">
+                        {announcement.title}
+                      </h3>
                       <p className="text-sm text-blue-100">
                         by {announcement.author} •{" "}
                         {new Date(announcement.createdAt).toLocaleString()}
@@ -163,4 +158,3 @@ const AllAnnouncements: React.FC = () => {
 };
 
 export default AllAnnouncements;
-
