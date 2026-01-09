@@ -1,9 +1,4 @@
 # TalkSphere 🌐
-
-<div align="center">
-  <img src="./frontend/public/assets/logo.png" alt="TalkSphere Logo" width="150" height="150">
-</div>
-
 ## 📖 Overview
 
 **TalkSphere** is an interactive community platform designed for students to write reviews about courses and faculty, rate them, and share helpful learning resources. It creates a collaborative environment where learners can make informed academic choices, exchange knowledge, and support each other's studies through meaningful discussions and peer engagement.
