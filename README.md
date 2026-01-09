@@ -1,5 +1,8 @@
 # TalkSphere 🌐
 
+<div align="center">
+  <img src="./frontend/public/assets/logo.png" alt="TalkSphere Logo" width="150" height="150">
+</div>
 
 ## 📖 Overview
 
@@ -57,9 +60,32 @@ The platform fosters open dialogue, knowledge exchange, and community building t
 
 ---
 
+## 📸 Screenshots
+
+### Home Page - Landing & Authentication
+
+<div align="center">
+  <img src="./website screenshot/Home Page.png" alt="Home Page" width="100%">
+</div>
+
+### Feed - Main Discussion Platform
+
+<div align="center">
+  <img src="./website screenshot/Feed.png" alt="Feed" width="100%">
+</div>
+
+### User Profile
+
+<div align="center">
+  <img src="./website screenshot/Profile.png" alt="Profile" width="100%">
+</div>
+
+---
+
 ## 🏗️ Technology Stack
 
 ### Frontend
+
 - **Framework**: React 19 with TypeScript
 - **Build Tool**: Vite
 - **Styling**: Tailwind CSS + DaisyUI
@@ -73,6 +99,7 @@ The platform fosters open dialogue, knowledge exchange, and community building t
 - **Infinite Scroll**: React Infinite Scroll Component
 
 ### Backend
+
 - **Runtime**: Node.js
 - **Framework**: Express.js
 - **Database**: MongoDB with Mongoose ODM
@@ -169,6 +196,7 @@ TalkSphere/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js (v16 or higher)
 - MongoDB (local or Atlas cloud database)
 - Firebase account (for authentication)
@@ -177,22 +205,26 @@ TalkSphere/
 ### Backend Setup
 
 1. **Navigate to backend directory**
+
    ```bash
    cd backend
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Create `.env` file** in the backend directory
+
    ```
    MONGO_URI=your_mongodb_connection_string
    PORT=5000
    ```
 
 4. **Start the server**
+
    ```bash
    # Development with auto-reload
    npm run dev
@@ -206,16 +238,19 @@ TalkSphere/
 ### Frontend Setup
 
 1. **Navigate to frontend directory**
+
    ```bash
    cd frontend
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Configure Firebase** in `src/config/firebase.config.ts`
+
    ```typescript
    // Add your Firebase configuration
    export const firebaseConfig = {
@@ -227,6 +262,7 @@ TalkSphere/
    ```
 
 4. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -239,5 +275,3 @@ TalkSphere/
    ```
 
 ---
-
-
