@@ -1,7 +1,7 @@
 # TalkSphere 🌐
 ## 📖 Overview
 
-**TalkSphere** is an interactive community platform designed for students to write reviews about courses and faculty, rate them, and share helpful learning resources. It creates a collaborative environment where learners can make informed academic choices, exchange knowledge, and support each other's studies through meaningful discussions and peer engagement.
+**TalkSphere** is an interactive community platform designed for students to write reviews about courses and faculty, rate them, and share helpful learning resources. Developed as part of the CSE470 course, it creates a collaborative environment where learners can make informed academic choices, exchange knowledge, and support each other's studies through meaningful discussions and peer engagement.
 
 The platform fosters open dialogue, knowledge exchange, and community building through a comprehensive system of posts, comments, ratings, and moderation tools.
 
